@@ -8,10 +8,7 @@ class SessionsController < ApplicationController
 	    },{
 	     :accept => :json
 	    });
-  	RestClient.post("http://localhost:5001/users/create",
-  		{
-  		access_token: JSON.parse(result)['access_token']
-  		});
+		redirect_to create_user_path(access_token: JSON.parse(result)['access_token'])
 	end
   # defines the session id by the user currently on the site
   # redirects to index page
