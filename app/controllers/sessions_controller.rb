@@ -8,7 +8,10 @@ class SessionsController < ApplicationController
 	    },{
 	     :accept => :json
 	    });
-  	puts(JSON.parse(result)['access_token'])
+  	RestClient.post("http://localhost:5001/users/create",
+  		{
+  		access_token: JSON.parse(result)['access_token']
+  		});
 	end
   # defines the session id by the user currently on the site
   # redirects to index page
@@ -24,5 +27,5 @@ class SessionsController < ApplicationController
 		session[:user_id] = nil
 		redirect_to root_url, notice: 'Logged Out'
 	end
-	
+
 end
