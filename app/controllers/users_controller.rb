@@ -7,12 +7,16 @@ class UsersController < ApplicationController
 	     code: params[:code]
 	    },{
 	     :accept => :json
-	    });
-	redirect_to create_session_path(access_token: JSON.parse(result)['access_token'])
+	    })
+		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
-	def create
-		puts params[:access_token]
+	def load
+		user = Rails.cache.fetch("#{params[:access_token]}", expires_in: 1.hour) do
+			return JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params['access_token'].to_s}}))
+		end
+		puts JSON.pretty_generate(user)
 		redirect_to root_url
 	end
+
 end

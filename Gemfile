@@ -28,6 +28,10 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'rest-client'
 
+# for caching 
+gem 'memcachier'
+gem 'dalli'
+
 group :doc do
   gem 'sdoc', require: false
 end

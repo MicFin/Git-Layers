@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   # redirects to index page
 	def create
 		user = User.find(params[:id])
-		session[:user_id] = user.id
+		session[:user_access_token] = user.id
 		redirect_to root_url, notice: 'Logged In'
 	end
 
