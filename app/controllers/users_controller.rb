@@ -12,10 +12,45 @@ class UsersController < ApplicationController
 	end
 
 	def load
-		user = Rails.cache.fetch("#{params[:access_token]}", expires_in: 1.hour) do
+		github_user = Rails.cache.fetch("#{params[:access_token]}", expires_in: 1.hour) do
 			return JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params['access_token'].to_s}}))
 		end
-		puts JSON.pretty_generate(user)
+		
+		stored_user = User.where(github_id: github_user.id).first
+		if stored_user
+			unless stored_user.updated_at == github_user.updated_at
+				User.update_attributes(
+					name: github_user.name,
+					url: github_user.url,
+					html_url: github_user.html_url,
+					repos_url: github_user.repos_url,
+					gists_url: github_user.gists_url,
+					avatar_url: github_user.avatar_url,
+					public_repos: github_user.public_repos,
+					github_id: github_user.id,
+					followers: github_user.followers,
+					following: github_user.following,
+					created_at: github_user,
+					updated_at: github_user
+				)
+			end
+		else
+			User.create(
+				name: github_user.name,
+				url: github_user.url,
+				html_url: github_user.html_url,
+				repos_url: github_user.repos_url,
+				gists_url: github_user.gists_url,
+				avatar_url: github_user.avatar_url,
+				public_repos: github_user.public_repos,
+				github_id: github_user.id,
+				followers: github_user.followers,
+				following: github_user.following,
+				created_at: github_user,
+				updated_at: github_user
+			)
+		end
+
 		redirect_to root_url
 	end
 
