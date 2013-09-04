@@ -1,15 +1,5 @@
 class SessionsController < ApplicationController
-
-	def callback
-		result = RestClient.post("https://github.com/login/oauth/access_token",
-	    {client_id: ENV['CLIENT_ID'],
-	     client_secret: ENV['CLIENT_SECRET'],
-	     code: params[:code]
-	    },{
-	     :accept => :json
-	    });
-		redirect_to create_user_path(access_token: JSON.parse(result)['access_token'])
-	end
+	
   # defines the session id by the user currently on the site
   # redirects to index page
 	def create
