@@ -59,7 +59,8 @@ class UsersController < ApplicationController
 	end
 
 	def show
-		user = User.find(current_user[:user_id])
+		puts current_user
+		user = User.find(current_user.id)
 		token = current_user[:user_access_token]
 		@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
 			JSON.parse(RestClient.get(user.repos_url, {params: {access_tokeN: token}}))

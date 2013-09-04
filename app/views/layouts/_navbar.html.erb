@@ -3,19 +3,21 @@
     <a class="toggle" gumby-trigger="#navbar-main-nav #main-nav" href="#"><i class="icon-menu"></i></a>
     <nav class="ten columns" style='margin: auto;'>
       <ul id="main-nav" style='margin: auto;'>
+        
         <% if !current_user %>
           <li><a href="https://github.com/login/oauth/authorize?client_id=<%=ENV["CLIENT_ID"]%>"><span> Login </span></a></li>
         <% else %>
           <li><a href="/sessions/destroy"><span> Logout </span></a></li>
         <% end %>
+        
         <li><a href="/about"><span> About </span></a></li>
-        <li><a href="/users/profile"><span> Profile </span></a></li>
-
+        
         <li>
           <p class="medium pretty default btn">
             <a href="">GitHub</a>
           </p>
         </li>
+
       </ul>
     </nav>
   </div>
