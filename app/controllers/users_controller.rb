@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
 
+	# defines protocol for github api callback
 	def callback
 		result = RestClient.post("https://github.com/login/oauth/access_token",
 	    {client_id: ENV['CLIENT_ID'],
@@ -11,11 +12,14 @@ class UsersController < ApplicationController
 		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
+
+	# loads user into database if nonexistant or out of date
 	def load
-		github_user = Rails.cache.fetch("#{params[:access_token]}", expires_in: 1.hour) do
-			return JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params['access_token'].to_s}}))
+
+		github_user = Rails.cache.fetch("user-#{params[:access_token]}", :expires_in => 2.minutes) do 
+			return JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
-		
+
 		stored_user = User.where(github_id: github_user['id']).first
 		if stored_user
 			unless stored_user.updated_at == github_user['updated_at']
@@ -31,11 +35,12 @@ class UsersController < ApplicationController
 					followers: github_user['followers'],
 					following: github_user['following'],
 					created_at: github_user['created_at'],
-					updated_at: github_user['updated_at']
+					updated_at: github_user['updated_at'],
+					email: github_user['email']
 				)
 			end
 		else
-			User.create(
+			stored_user = User.create(
 				name: github_user['name'],
 				url: github_user['url'],
 				html_url: github_user['html_url'],
@@ -47,11 +52,12 @@ class UsersController < ApplicationController
 				followers: github_user['followers'],
 				following: github_user['following'],
 				created_at: github_user['created_at'],
-				updated_at: github_user['updated_at']
+				updated_at: github_user['updated_at'],
+				email: github_user['email']
 			)
 		end
-		puts User.last
-		redirect_to root_url
+		puts stored_user.attributes
+		redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
 	end
 
 end
