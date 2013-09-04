@@ -1,7 +1,8 @@
 GitLayers::Application.routes.draw do
   root to: 'welcome#index'
   get 'sessions/callback', to: 'sessions#callback'
-  post 'sessions/create', to: 'sessions#create'
+  get 'sessions/create', to: 'sessions#create', as: 'create_session'
   get 'sessions/destroy', to: 'sessions#destroy'
-  post 'users/create', to: 'users#create', as: 'create_user'
+  get 'users/create', to: 'users#create', as: 'create_user'
+  get 'users/callback', to: 'users#callback'
 end

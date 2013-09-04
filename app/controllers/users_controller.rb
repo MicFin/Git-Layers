@@ -1,4 +1,4 @@
-class UsersController < ApplicationsController
+class UsersController < ApplicationController
 
 	def callback
 		result = RestClient.post("https://github.com/login/oauth/access_token",
@@ -8,7 +8,7 @@ class UsersController < ApplicationsController
 	    },{
 	     :accept => :json
 	    });
-		redirect_to create_user_path(access_token: JSON.parse(result)['access_token'])
+	redirect_to create_session_path(access_token: JSON.parse(result)['access_token'])
 	end
 
 	def create

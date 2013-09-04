@@ -1,5 +1,4 @@
 class SessionsController < ApplicationController
-	
   # defines the session id by the user currently on the site
   # redirects to index page
 	def create
