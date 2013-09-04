@@ -56,9 +56,7 @@ class UsersController < ApplicationController
 				email: github_user['email']
 			)
 		end
-		puts stored_user.attributes
-		redirect_to root_url
-		# redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
+		redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
 	end
 
 end
