@@ -13,9 +13,8 @@ class UsersController < ApplicationController
 	end
 
 
-	# loads user into database if nonexistant or out of date
+	# loads user into databse or updates user if nonexistant or out of date
 	def load
-
 		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
 			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
@@ -56,9 +55,14 @@ class UsersController < ApplicationController
 				email: github_user['email']
 			)
 		end
-		puts stored_user.attributes
-		redirect_to root_url
-		# redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
+		redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
 	end
 
+	def show
+		user = User.find(current_user[:user_id])
+		token = current_user[:user_access_token]
+		@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
+			JSON.parse(RestClient.get(user.repos_url, {params: {access_tokeN: token}}))
+		end
+	end
 end

@@ -13,7 +13,6 @@ class SessionsController < ApplicationController
 		session[:user_id] = nil
 		session[:user_access_token] = nil
 		redirect_to root_url, notice: 'Logged Out'
-
 	end
 
 end

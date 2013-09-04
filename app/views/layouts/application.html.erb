@@ -2,12 +2,13 @@
 <html>
 <head>
   <title>GitLayers</title>
-  <%= stylesheet_link_tag %>
-  <%= javascript_include_tag %>
-  <%= csrf_meta_tags %>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
 </head>
 <body>
-	<a href='https://github.com/login/oauth/authorize?client_id=<%=ENV["CLIENT_ID"]%>'>Login</a></p>
+	<%= render 'layouts/navbar' %>
+
 <%= yield %>
 
 </body>
