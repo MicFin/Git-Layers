@@ -1,1 +1,3 @@
-<%= @user_repos %>
+<% @commit_dates.each do |date, value| %>
+	<p><%= date %> : <%= value %></p>
+<% end %>
