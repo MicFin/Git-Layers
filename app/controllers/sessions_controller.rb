@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
 	def create
 		session[:user_access_token] = params[:access_token]
 		session[:user_id] = params[:id]
-		redirect_to root_url, notice: 'Logged In'
+		redirect_to user_profile_path, notice: 'Logged In'
 	end
 
   # logs out a user, removing the user id from session

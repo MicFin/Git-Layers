@@ -58,12 +58,12 @@ class UsersController < ApplicationController
 		redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
 	end
 
-	def show
-		puts current_user
+	def profile
 		user = User.find(current_user.id)
-		token = current_user[:user_access_token]
+		token = session[:user_access_token]
 		@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
-			JSON.parse(RestClient.get(user.repos_url, {params: {access_tokeN: token}}))
+			JSON.parse(RestClient.get(user.repos_url, {params: {access_token: token}}))
 		end
+		@user_repos = @user_repos.to_json.html_safe
 	end
 end
