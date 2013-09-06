@@ -3,6 +3,7 @@ class UsersController < ApplicationController
 	# defines protocol for github api callback
 	def callback
 
+		puts params[:code]
 		result = RestClient.post("https://github.com/login/oauth/access_token",
 	    {client_id: ENV['CLIENT_ID'],
 	     client_secret: ENV['CLIENT_SECRET'],
