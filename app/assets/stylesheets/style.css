@@ -47,9 +47,9 @@ body {
 	font-family: 'Advent Pro';
 }
 
-#page-title{
-	font-size: 100px;
-	margin-bottom: 20px;
+#about-title{
+	text-align: center;
+	margin-top: 30px;
 }
 
 .content-container {
