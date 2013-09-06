@@ -27,9 +27,11 @@ var Repo = {
 
 			.transition()
 			.delay(function() {
-				return 500 + (Math.random() * (Math.random() + 1)) * 100;
+				return 500 + (Math.random() * (Math.random() + 2)) * 100;
 			})
-			.duration(700)
+			.duration(function() {
+				return 500 + (Math.random() * (Math.random() + 3)) * 300;
+			})
 			.attr('height', 50)
 			.attr('width', 50)
 			.each('end', function() {

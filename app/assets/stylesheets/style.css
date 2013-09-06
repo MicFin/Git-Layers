@@ -55,14 +55,17 @@ body {
 }
 
 #about-message {
-	width: 900px;
+	width: 1000px;
 	margin: auto;
 }
 
 #about-message p {
 	font-size: 30px;
+	text-indent: 40px;
+
 }
 
 #about-message span {
 	font-size: 50px;
+	font-family: 'Abel';
 }
