@@ -4,7 +4,6 @@ var Repo = {
 		var square_size = 60,
 			h = parseInt((repos.length / 15) + 1) * square_size;
 
-		console.log(repos.length)
 		svg = Repo.repoCanvas(h);
 
 		svg.selectAll('rect')

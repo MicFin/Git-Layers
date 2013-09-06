@@ -29,7 +29,7 @@ gem 'jbuilder', '~> 1.2'
 gem 'rest-client'
 
 # for caching 
-gem 'memcached'
+gem 'memcachier'
 gem 'dalli'
 
 group :doc do
