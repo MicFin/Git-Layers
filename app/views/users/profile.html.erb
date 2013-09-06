@@ -1,1 +1,5 @@
-<%= @commits %>
+<script>
+	$(function() {
+		Repo.repoGrid(<%=@user_repos%>);
+	}) 
+</script>

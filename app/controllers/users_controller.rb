@@ -16,7 +16,7 @@ class UsersController < ApplicationController
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
 		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
-			JSON.parse(RestClient.get("https://api.github.com/user", params: {:access_token => params[:access_token]}))
+			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
 
 		stored_user = User.where(github_id: github_user['id']).first
@@ -59,23 +59,35 @@ class UsersController < ApplicationController
 	end
 
 	def profile
-		user = User.find(current_user.id)
-		token = session[:user_access_token]
-		@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
-			JSON.parse(RestClient.get(user.repos_url, {params: {access_token: token, per_page: 100, type: all}}))
-		end
-		@org_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
-			JSON.parse(RestClient.get(user.repos_url, {params: {access_token: token, per_page: 100, type: member}}))
-		end
-		puts @org_repos.count
-		@commits = []
-		@commit_dates = {}
-		@user_repos.each do |repo|
-			repo_commits = Rails.cache.fetch("repo-commits-#{user.id}-#{repo['name']}", expires_in: 9000.seconds) do
-				JSON.parse(RestClient.get(repo['commits_url'].split('{')[0], {params: {access_token: token}}))
+
+		if !current_user
+			puts 'no user!'
+			redirect_to '/'
+		else
+			user = User.find(current_user.id)
+			token = session[:user_access_token]
+			@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
+				JSON.parse(RestClient.get(user.repos_url, {params: {access_token: token, page: 1, per_page: 100}}))
 			end
-			@commits << repo_commits
+			@user_repos.reject! do |repo|
+				!repo['language']
+			end
+			@user_repos = @user_repos.to_json.html_safe
 		end
-		@commits =  @commits.flatten
+		# @commits = []
+		# @commit_dates = {}
+		# @user_repos.each do |repo|
+		# 	repo_commits = Rails.cache.fetch("repo-commits-#{user.id}-#{repo['name']}", expires_in: 9000.seconds) do
+		# 		JSON.parse(RestClient.get(repo['commits_url'].split('{')[0], {params: {access_token: token}}))
+		# 	end
+		# 	@commits << repo_commits
+		# end
+		# @commits =  @commits.flatten
+		# @commits.each do |commit|
+		# 	date = commit['commit']['committer']['date'].split('T')[0].gsub('-','')
+		# 	@commit_dates[date] ||= 0
+		# 	@commit_dates[date] += 1
+		# end
+		# puts @commit_dates.keys.sort!
 	end
 end

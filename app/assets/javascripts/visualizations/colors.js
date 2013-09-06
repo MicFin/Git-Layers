@@ -1,5 +1,10 @@
 var Color = {
+
 	stringColor: function(string) {
+		if(string === "Ruby") {return '#992124';}
+		if(string === 'JavaScript') {return '#d2ba44';}
+		if(string === 'C++') {return '#624588';}
+
 		if (string.length < 6) {
 			while(string.length < 6) {
 				string += 'ax';
@@ -22,6 +27,9 @@ var Color = {
 	},
 
 	stringHover: function(string) {
+		if(string === "Ruby") {return '#ca2830';}
+		if(string === 'JavaScript') {return '#ebcf4b';}
+		if(string === 'C++') {return '#8e65c5';}
 		if (string.length < 6) {
 			while(string.length < 6) {
 				string += 'ax';
