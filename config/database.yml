@@ -17,3 +17,9 @@ test:
   database: layers_test
   pool: 5
   timeout: 5000
+
+preduction:
+  adapter: postgresql
+  database: layers_production
+  pool: 5
+  timeout: 5000
