@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import url(http://fonts.googleapis.com/css?family=Advent+Pro:100,200,300,regular,500,600,700&subsets=latin-ext,greek,latin);
+@import url(http://fonts.googleapis.com/css?family=Abel|Advent+Pro:100,200,300,regular,500,600,700&subsets=latin-ext,greek,latin);
 /*
 * Gumby Framework Version 2.0
 * ---------------------------
@@ -32,7 +32,7 @@ html { font-size: 18px; line-height: 1.44444em; }
 
 html * { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
 
-body { background: #f2f2f2; font-family: "Advent Pro"; font-weight: 400; color: #555555; position: relative; -webkit-font-smoothing: antialiased; }
+body { background: #f2f2f2; font-family: "Abel"; font-weight: 400; color: #555555; position: relative; -webkit-font-smoothing: antialiased; }
 @media only screen and (max-width: 767px) { body { -webkit-text-size-adjust: none; -ms-text-size-adjust: none; width: 100%; min-width: 0; } }
 
 html, body { height: 100%; }
@@ -57,7 +57,7 @@ html, body { height: 100%; }
 .text-right { text-align: right; }
 
 /* Fonts */
-@font-face { font-family: "entypo"; font-style: normal; font-weight: 400; src: url(../fonts/icons/entypo.eot); src: url("../fonts/icons/entypo.eot?#iefix") format("ie9-skip-eot"), url("../fonts/icons/entypo.woff") format("woff"), url("../fonts/icons/entypo.ttf") format("truetype"); }
+@font-face { font-family: "entypo"; font-style: normal; font-weight: 400; src: url('entypo.eot'); src: url("entypo.eot?#iefix") format("ie9-skip-eot"), url("entypo.woff") format("woff"), url("entypo.ttf") format("truetype"); }
 
 h1, h2, h3, h4, h5, h6 { font-family: "Advent Pro"; font-weight: Normal; color: #444444; text-rendering: optimizeLegibility; padding-top: 0.24267em; line-height: 1.027em; padding-bottom: 0.24267em; }
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { color: #d04526; }
@@ -481,7 +481,7 @@ form fieldset legend { padding: 5px 10px; }
 .btn.default:active, .skiplink.default:active { background: #d8d8d8; }
 .btn.default:hover, .skiplink.default:hover { border: 1px solid #e5e5e5; }
 .btn.default a, .btn.default input, .btn.default button, .skiplink.default a, .skiplink.default input, .skiplink.default button { color: #555555; }
-.btn.info, .skiplink.info { background: #4a4d50; border: 1px solid #4a4d50; }
+.btn.info, .skiplink.info { background: #080808; border: 1px solid #4a4d50; }
 .btn.info:hover, .skiplink.info:hover { background: #63676a; }
 .btn.info:active, .skiplink.info:active { background: #313436; }
 .btn.danger, .skiplink.danger { background: #ca3838; border: 1px solid #ca3838; }
@@ -597,7 +597,7 @@ form fieldset legend { padding: 5px 10px; }
   .navbar ul.active { height: auto; max-height: 600px; z-index: 999999; -webkit-transition-duration: 0.5s; -moz-transition-duration: 0.5s; -o-transition-duration: 0.5s; transition-duration: 0.5s; -webkit-box-shadow: 0 2px 2px black; -moz-box-shadow: 0 2px 2px black; box-shadow: 0 2px 2px black; } }
 .navbar ul li { display: table-cell; text-align: center; padding-bottom: 0; margin: 0; height: 60px; line-height: 58px; }
 @media only screen and (max-width: 767px) { .navbar ul li { display: block; position: relative; min-height: 50px; max-height: 320px; height: auto; width: 100%; border-right: 0 !important; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none; -webkit-transition-duration: 0.5s; -moz-transition-duration: 0.5s; -o-transition-duration: 0.5s; transition-duration: 0.5s; } }
-.navbar ul li > a { display: block; padding: 0 50px; white-space: nowrap; color: white; text-shadow: 0 1px 2px black, 0 1px 0 black; height: 60px; line-height: 58px; font-size: 18px; font-size: 1rem; }
+.navbar ul li > a { display: block; padding: 0 50px; white-space: nowrap; color: white; text-shadow: 0 1px 2px black, 0 1px 0 black; height: 60px; line-height: 58px; font-size: 18px; font-size: 1.5rem; }
 .navbar ul li > a i.icon-popup { position: absolute; }
 .navbar ul li .btn { border-color: black !important; }
 .navbar ul li.field { margin-bottom: 0 !important; margin-right: 0; }

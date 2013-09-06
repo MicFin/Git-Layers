@@ -4,4 +4,8 @@ class WelcomeController < ApplicationController
 			redirect_to user_profile_path
 		end
 	end
+
+	def about
+
+	end
 end

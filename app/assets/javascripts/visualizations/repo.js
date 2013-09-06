@@ -6,7 +6,7 @@ var Repo = {
 
 		svg = Repo.repoCanvas(h);
 
-		svg.selectAll('rect')
+		rects = svg.selectAll('rect')
 			.data(repos)
 			.enter()
 			.append('rect')
@@ -80,6 +80,6 @@ var Repo = {
 			.attr('width', 900);
 
 		return svg;
-	},
+	}
 
 };

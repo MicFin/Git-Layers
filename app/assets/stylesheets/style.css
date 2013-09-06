@@ -1,10 +1,36 @@
+body {
+	background: url('white_carbon.png') fixed;
+}
+
 #repos_container {
 	display: block;
 	margin: auto;
-	background: url('white_carbon.png');
-	margin-top: 50px;
+	background: #eaeaea;
+	margin-top: 30px;
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
 	padding-top: 20px;
 	padding-bottom: 20px;
+}
+
+.profile-section-header {
+	text-align: center;
+
+}
+
+#login-button {
+	border-radius: 5px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+#welcome-message {
+	margin: auto;
+	margin-top: 100px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background: #eaeaea;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	text-align: center;
 }

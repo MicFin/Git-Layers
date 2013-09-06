@@ -67,7 +67,6 @@ class UsersController < ApplicationController
 	end
 
 	def profile
-
 		if !current_user
 			puts 'no user!'
 			redirect_to '/'
@@ -82,20 +81,9 @@ class UsersController < ApplicationController
 			end
 			@user_repos = @user_repos.to_json.html_safe
 		end
-		# @commits = []
-		# @commit_dates = {}
-		# @user_repos.each do |repo|
-		# 	repo_commits = Rails.cache.fetch("repo-commits-#{user.id}-#{repo['name']}", expires_in: 9000.seconds) do
-		# 		JSON.parse(RestClient.get(repo['commits_url'].split('{')[0], {params: {access_token: token}}))
-		# 	end
-		# 	@commits << repo_commits
-		# end
-		# @commits =  @commits.flatten
-		# @commits.each do |commit|
-		# 	date = commit['commit']['committer']['date'].split('T')[0].gsub('-','')
-		# 	@commit_dates[date] ||= 0
-		# 	@commit_dates[date] += 1
-		# end
-		# puts @commit_dates.keys.sort!
+	end
+
+	def percent_lang_by_bytes
+		respond_with "hello"
 	end
 end
