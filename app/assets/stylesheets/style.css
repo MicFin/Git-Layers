@@ -18,6 +18,14 @@ body {
 
 }
 
+#page-title {
+	text-align: center;
+}
+
+#page-title h1{
+	font-size: 100px;
+}
+
 #login-button {
 	border-radius: 5px;
 	margin-top: 40px;
@@ -26,8 +34,8 @@ body {
 
 #welcome-message {
 	margin: auto;
-	margin-top: 100px;
 	padding-top: 20px;
+	margin-top: 40px;
 	padding-bottom: 20px;
 	background: #eaeaea;
 	border-top: 1px solid black;
@@ -39,19 +47,21 @@ body {
 	font-family: 'Advent Pro';
 }
 
-#about-title {
-	margin: auto;
-	text-align: center;
+#page-title{
+	font-size: 100px;
 	margin-bottom: 20px;
 }
 
-#about-back {
+.content-container {
 	margin: auto;
+	margin-top: 40px;
+	margin-bottom: 30px;
 	padding-top: 20px;
 	padding-bottom: 20px;
 	background: #eaeaea;
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
+	text-align: center;
 }
 
 #about-message {
