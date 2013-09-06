@@ -34,3 +34,35 @@ body {
 	border-bottom: 1px solid black;
 	text-align: center;
 }
+
+#welcome-message span {
+	font-family: 'Advent Pro';
+}
+
+#about-title {
+	margin: auto;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#about-back {
+	margin: auto;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background: #eaeaea;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+#about-message {
+	width: 900px;
+	margin: auto;
+}
+
+#about-message p {
+	font-size: 30px;
+}
+
+#about-message span {
+	font-size: 50px;
+}
