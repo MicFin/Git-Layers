@@ -19,6 +19,8 @@ class UsersController < ApplicationController
 			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
 
+		puts 'made the request'
+		
 		stored_user = User.where(github_id: github_user['id']).first
 		if stored_user
 			unless stored_user.updated_at == github_user['updated_at']
