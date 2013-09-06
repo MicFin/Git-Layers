@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.0'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'pg'
 
 gem 'pry'
 
@@ -29,7 +29,7 @@ gem 'jbuilder', '~> 1.2'
 gem 'rest-client'
 
 # for caching 
-gem 'memcachier'
+gem 'memcached'
 gem 'dalli'
 
 group :doc do
