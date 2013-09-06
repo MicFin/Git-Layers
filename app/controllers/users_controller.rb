@@ -2,6 +2,7 @@ class UsersController < ApplicationController
 
 	# defines protocol for github api callback
 	def callback
+
 		result = RestClient.post("https://github.com/login/oauth/access_token",
 	    {client_id: ENV['CLIENT_ID'],
 	     client_secret: ENV['CLIENT_SECRET'],
@@ -15,8 +16,9 @@ class UsersController < ApplicationController
 
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
-		puts 'before request'
-		
+		Rails.cache.write('derp', 'hello')
+		puts Rails.cache.fetch('derp')
+
 		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
 			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
