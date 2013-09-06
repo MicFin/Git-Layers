@@ -15,12 +15,14 @@ class UsersController < ApplicationController
 
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
+		puts 'before request'
+		
 		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
 			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
 
 		puts 'made the request'
-		
+
 		stored_user = User.where(github_id: github_user['id']).first
 		if stored_user
 			unless stored_user.updated_at == github_user['updated_at']
