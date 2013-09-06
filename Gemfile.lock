@@ -76,7 +76,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    memcached (1.7.0)
+    memcachier (0.0.2)
     meta_request (0.2.7)
       callsite
       rack-contrib
@@ -190,7 +190,7 @@ DEPENDENCIES
   foreman
   jbuilder (~> 1.2)
   jquery-rails
-  memcached
+  memcachier
   meta_request
   pg
   pry
