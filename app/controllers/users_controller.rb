@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
-
+	respond_to :json
 	# defines protocol for github api callback
 	def callback
+		puts params[:code]
 		result = RestClient.post("https://github.com/login/oauth/access_token",
 	    {client_id: ENV['CLIENT_ID'],
 	     client_secret: ENV['CLIENT_SECRET'],
@@ -9,6 +10,7 @@ class UsersController < ApplicationController
 	    },{
 	     :accept => :json
 	    })
+		puts result 
 		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
@@ -58,11 +60,41 @@ class UsersController < ApplicationController
 		redirect_to create_session_path(id: stored_user.id, access_token: params[:access_token])
 	end
 
-	def show
-		user = User.find(current_user[:user_id])
-		token = current_user[:user_access_token]
-		@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
-			JSON.parse(RestClient.get(user.repos_url, {params: {access_tokeN: token}}))
+	def profile
+		if !current_user
+			redirect_to '/'
+		else 
+			user = User.find(current_user.id)
+			token = session[:user_access_token]
+			@user_repos = Rails.cache.fetch("user-repos-#{user.id}-created", expires_in: 9000.seconds) do 
+				JSON.parse(RestClient.get(user.repos_url, {params: 
+					{ access_token: token, 
+						page: 1, 
+						per_page: 100, 
+						sort: 'created'}}))
+			end
+			@user_repos.reject! do |repo|
+				!repo['language']
+			end
+			@user_repos = @user_repos.to_json.html_safe
 		end
 	end
+
+	def repos
+		sort_type = params[:sort_type] || 'created'
+		user = User.find(current_user.id)
+		token = session[:user_access_token]
+		@user_repos = Rails.cache.fetch("user-repos-#{user.id}-#{sort_type}", expires_in: 9000.seconds) do 
+			JSON.parse(RestClient.get(user.repos_url, {params: 
+				{ access_token: token, 
+					page: 1, 
+					per_page: 100, 
+					sort: sort_type}}))
+		end
+		@user_repos.reject! do |repo|
+			!repo['language']
+		end
+		respond_with @user_repos.to_json.html_safe
+	end
+
 end
