@@ -11,6 +11,7 @@ var Repo = {
 	},
 
 	repoGrid: function(repos) {
+		console.log('rendering repo grid')
 		var square_size = 60,
 			h = parseInt((repos.length / 15) + 1) * square_size;
 
@@ -79,7 +80,6 @@ var Repo = {
 
 	repoCanvas: function(h) {
 		
-		var existing_canvas = d3.select('#repo-container-canvas')[0][0];
 		$('#repo-container-back')
 			.css('height', h + 60)
 			.css('padding-left', function() {
@@ -92,15 +92,12 @@ var Repo = {
 				'opacity': 1
 			}, 500);
 
-		if(existing_canvas === null){
-			var new_canvas = d3.select('#repo-container-back')
-				.append('svg')
-				.attr('height', h)
-				.attr('width', 900)
-				.attr('id','repo-container-canvas');
-			return new_canvas;
-		}
-		return d3.select('#repo-container-canvas');
+		var new_canvas = d3.select('#repo-container-back')
+			.append('svg')
+			.attr('height', h)
+			.attr('width', 900)
+			.attr('id','repo-container-canvas');
+		return new_canvas;
 	},
 
 	activeSortButtons: function() {
@@ -112,27 +109,28 @@ var Repo = {
 				data: {'sort_type':$(this).attr('href').toString()}
 			}).done(function(data) {
 				Repo.clearCanvas();
-				Repo.repoGrid(data);
+				d3.select('#repo-container-canvas')
+					.transition()
+					.delay(1000)
+					.duration(10)
+					.each('end', function() {
+						Repo.repoGrid(data);
+					})
+					.remove();
+
+				
 			});
 		});
 	},
 
 	clearCanvas: function() {
-		d3.selectAll('rect.repo')
-			.transition()
-			.delay(function() {
-				return (Math.random() * (Math.random() + 2)) * 100;
-			})
-			.duration(function() {
-				return (Math.random() * (Math.random() + 3)) * 300;
-			})
-			.attr('height', 0)
-			.attr('x', function() {
-				return d3.select(this).attr('x') + 0.5;
-			})
-			.attr('width', 0)
-			.each('end', function(){
-				d3.select(this).remove();
-		});
+			d3.selectAll('rect.repo')
+				.transition()
+				.duration(function() {
+					return (Math.random() * (Math.random() + 3)) * 300;
+				})
+				.attr('height', 0)
+				.attr('width', 0)
+				.remove();
 	}
 };
