@@ -1,5 +1,15 @@
 var Repo = {
 
+	displayRepos: function() {
+		$.ajax({
+			type: 'GET',
+			dataType: 'json',
+			url: '/users/repos'
+		}).done(function(data) {
+			Repo.repoGrid(data);
+		});
+	},
+
 	repoGrid: function(repos) {
 		var square_size = 60,
 			h = parseInt((repos.length / 15) + 1) * square_size;
@@ -68,7 +78,9 @@ var Repo = {
 	},
 
 	repoCanvas: function(h) {
-		$('<div>')
+		
+		var existing_canvas = d3.select('#repo-container-canvas')[0][0];
+		$('#repo-container-back')
 			.css('height', h + 60)
 			.css('padding-left', function() {
 				return $(window).width()/2 - 450;
@@ -76,16 +88,51 @@ var Repo = {
 			.css('padding-right', function() {
 				return $(window).width()/2 - 450;
 			})
-			.attr('id', 'repos_container')
-			.attr('class', 'content-container')
-			.appendTo('#main');
+			.animate({
+				'opacity': 1
+			}, 500);
 
-		var svg = d3.select('#repos_container')
-			.append('svg')
-			.attr('height', h)
-			.attr('width', 900);
+		if(existing_canvas === null){
+			var new_canvas = d3.select('#repo-container-back')
+				.append('svg')
+				.attr('height', h)
+				.attr('width', 900)
+				.attr('id','repo-container-canvas');
+			return new_canvas;
+		}
+		return d3.select('#repo-container-canvas');
+	},
 
-		return svg;
+	activeSortButtons: function() {
+		$('.sort-button').click(function(e) {
+			e.preventDefault();
+			$.ajax({
+				url: '/users/repos',
+				type: 'GET',
+				data: {'sort_type':$(this).attr('href').toString()}
+			}).done(function(data) {
+				Repo.clearCanvas();
+				Repo.repoGrid(data);
+			});
+		});
+	},
+
+	clearCanvas: function() {
+		d3.selectAll('rect.repo')
+			.transition()
+			.delay(function() {
+				return (Math.random() * (Math.random() + 2)) * 100;
+			})
+			.duration(function() {
+				return (Math.random() * (Math.random() + 3)) * 300;
+			})
+			.attr('height', 0)
+			.attr('x', function() {
+				return d3.select(this).attr('x') + 0.5;
+			})
+			.attr('width', 0)
+			.each('end', function(){
+				d3.select(this).remove();
+		});
 	}
-
 };

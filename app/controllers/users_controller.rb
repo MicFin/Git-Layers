@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+	respond_to :json
 	# defines protocol for github api callback
 	def callback
 		puts params[:code]
@@ -62,26 +62,25 @@ class UsersController < ApplicationController
 
 	def profile
 		if !current_user
-			puts 'no user!'
 			redirect_to '/'
-		else
-			user = User.find(current_user.id)
-			token = session[:user_access_token]
-			@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
-				JSON.parse(RestClient.get(user.repos_url, {params: 
-					{ access_token: token, 
-						page: 1, 
-						per_page: 100, 
-						sort: params['sort'] || 'created' }}))
-			end
-			@user_repos.reject! do |repo|
-				!repo['language']
-			end
-			@user_repos = @user_repos.to_json.html_safe
 		end
 	end
 
-	def percent_lang_by_bytes
-		respond_with "hello"
+	def repos
+		sort_type = params[:sort_type] || 'created'
+		user = User.find(current_user.id)
+		token = session[:user_access_token]
+		@user_repos = Rails.cache.fetch("user-repos-#{user.id}-#{sort_type}", expires_in: 9000.seconds) do 
+			JSON.parse(RestClient.get(user.repos_url, {params: 
+				{ access_token: token, 
+					page: 1, 
+					per_page: 100, 
+					sort: sort_type}}))
+		end
+		@user_repos.reject! do |repo|
+			!repo['language']
+		end
+		respond_with @user_repos.to_json.html_safe
 	end
+
 end
