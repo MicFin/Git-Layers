@@ -111,14 +111,12 @@ var Repo = {
 				Repo.clearCanvas();
 				d3.select('#repo-container-canvas')
 					.transition()
-					.delay(1000)
+					.delay(500)
 					.duration(10)
 					.each('end', function() {
 						Repo.repoGrid(data);
 					})
 					.remove();
-
-				
 			});
 		});
 	},
@@ -127,7 +125,7 @@ var Repo = {
 			d3.selectAll('rect.repo')
 				.transition()
 				.duration(function() {
-					return (Math.random() * (Math.random() + 3)) * 300;
+					return (Math.random() * (Math.random() + 1)) * 300;
 				})
 				.attr('height', 0)
 				.attr('width', 0)
