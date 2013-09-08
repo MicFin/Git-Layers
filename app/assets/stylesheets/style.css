@@ -5,17 +5,14 @@ body {
 #repos_container {
 	display: block;
 	margin: auto;
-	background: #eaeaea;
 	margin-top: 30px;
+	background: #eaeaea;
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
-	padding-top: 20px;
-	padding-bottom: 20px;
 }
 
 .profile-section-header {
 	text-align: center;
-
 }
 
 #page-title {
@@ -38,8 +35,8 @@ body {
 
 #welcome-message {
 	margin: auto;
-	padding-top: 20px;
 	margin-top: 40px;
+	padding-top: 20px;
 	padding-bottom: 20px;
 	background: #eaeaea;
 	border-top: 1px solid black;
@@ -60,8 +57,8 @@ body {
 	margin: auto;
 	margin-top: 60px;
 	margin-bottom: 30px;
-	padding-top: 40px;
-	padding-bottom: 40px;
+	padding-top: 30px;
+	padding-bottom: 30px;
 	background: #eaeaea;
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;

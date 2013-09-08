@@ -5,7 +5,6 @@ var Repo = {
 			h = parseInt((repos.length / 15) + 1) * square_size;
 
 		svg = Repo.repoCanvas(h);
-
 		rects = svg.selectAll('rect')
 			.data(repos)
 			.enter()
@@ -15,7 +14,11 @@ var Repo = {
 			.attr('width', 0)
 			.attr('opacity', 1)
 			.attr('class', 'repo')
-			.attr('fill', function(d, i) {
+			.style('stroke',  function(d, i){
+				return Color.stringColor(d['language'].toString());
+			})
+			.style('stroke-width', 1)
+			.style('fill', function(d, i) {
 				return Color.stringColor(d['language'].toString());
 			})
 			.attr('x', function(d, i){
@@ -40,7 +43,7 @@ var Repo = {
 						d3.select(this)
 						.transition()
 						.duration(50)
-						.attr('fill', function(d, i){
+						.style('fill', function(d, i){
 							return Color.stringHover(d['language'].toString());
 						})
 						.transition()
@@ -51,7 +54,7 @@ var Repo = {
 						d3.select(this)
 						.transition()
 						.duration(1000)
-						.attr('fill', function(d, i){
+						.style('fill', function(d, i){
 							return Color.stringColor(d['language'].toString());
 						})
 						.transition()
@@ -66,7 +69,7 @@ var Repo = {
 
 	repoCanvas: function(h) {
 		$('<div>')
-			.css('height', h + 40)
+			.css('height', h + 60)
 			.css('padding-left', function() {
 				return $(window).width()/2 - 450;
 			})
@@ -74,6 +77,7 @@ var Repo = {
 				return $(window).width()/2 - 450;
 			})
 			.attr('id', 'repos_container')
+			.attr('class', 'content-container')
 			.appendTo('#main');
 
 		var svg = d3.select('#repos_container')

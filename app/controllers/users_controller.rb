@@ -68,7 +68,11 @@ class UsersController < ApplicationController
 			user = User.find(current_user.id)
 			token = session[:user_access_token]
 			@user_repos = Rails.cache.fetch("user-repos-#{user.id}", expires_in: 9000.seconds) do 
-				JSON.parse(RestClient.get(user.repos_url, {params: {access_token: token, page: 1, per_page: 100}}))
+				JSON.parse(RestClient.get(user.repos_url, {params: 
+					{ access_token: token, 
+						page: 1, 
+						per_page: 100, 
+						sort: params['sort'] || 'created' }}))
 			end
 			@user_repos.reject! do |repo|
 				!repo['language']
