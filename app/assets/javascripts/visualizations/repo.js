@@ -79,7 +79,8 @@ var Repo = {
 	},
 
 	repoCanvas: function(h) {
-		
+		var new_canvas;
+
 		$('#repo-container-back')
 			.css('height', h + 60)
 			.css('padding-left', function() {
@@ -92,7 +93,10 @@ var Repo = {
 				'opacity': 1
 			}, 500);
 
-		var new_canvas = d3.select('#repo-container-back')
+		d3.selectAll('svg')
+			.remove();
+
+		new_canvas = d3.select('#repo-container-back')
 			.append('svg')
 			.attr('height', h)
 			.attr('width', 900)
