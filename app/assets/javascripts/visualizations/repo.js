@@ -1,6 +1,7 @@
 var Repo = {
 
 	displayRepos: function() {
+
 		$.ajax({
 			type: 'GET',
 			dataType: 'json',
@@ -8,10 +9,11 @@ var Repo = {
 		}).done(function(data) {
 			Repo.repoGrid(data);
 		});
+		
 	},
 
 	repoGrid: function(repos) {
-		console.log('rendering repo grid')
+
 		var square_size = 60,
 			h = parseInt((repos.length / 15) + 1) * square_size;
 
@@ -77,11 +79,12 @@ var Repo = {
 						window.open(this.__data__['html_url']);
 					});
 			});
+
 	},
 
 	repoCanvas: function(h) {
-		var new_canvas;
 
+		var new_canvas;
 		$('#repo-container-back')
 			.css('height', h + 105)
 			.css('padding-left', function() {
@@ -103,9 +106,11 @@ var Repo = {
 			.attr('width', 900)
 			.attr('id','repo-container-canvas');
 		return new_canvas;
+
 	},
 
 	activeSortButtons: function() {
+
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
 			$.ajax({
@@ -124,9 +129,11 @@ var Repo = {
 					.remove();
 			});
 		});
+
 	},
 
 	clearCanvas: function() {
+
 			d3.selectAll('rect.repo')
 				.transition()
 				.duration(function() {
@@ -135,9 +142,22 @@ var Repo = {
 				.attr('height', 0)
 				.attr('width', 0)
 				.remove();
+
 	},
 
 	displayRepoName: function(name) {
 		$('#repo-name').html(name);
+	},
+
+	horizontalResize: function(name) {
+
+		$('#repo-container-back')
+			.css('padding-left', function() {
+				return $(window).width()/2 - 450;
+			})
+			.css('padding-right', function() {
+				return $(window).width()/2 - 450;
+			});
+
 	}
 };

@@ -4,6 +4,10 @@
 	$(function() {
 		Repo.repoGrid(<%=@user_repos%>);
 		Repo.activeSortButtons();
+		$(window).resize(function() {
+			console.log('hello');
+			Repo.horizontalResize();
+		})
 	})
 </script> 
 
