@@ -58,7 +58,7 @@ var Repo = {
 							return Color.stringHover(d['language'].toString());
 						})
 						.transition()
-						.duration(500)
+						.duration(2000)
 						.attr('rx', 15);
 					})
 					.on('mouseleave', function() {
@@ -68,8 +68,6 @@ var Repo = {
 						.style('fill', function(d, i){
 							return Color.stringColor(d['language'].toString());
 						})
-						.transition()
-						.duration(500)
 						.attr('rx', 5);
 					})
 					.on('click', function() {
