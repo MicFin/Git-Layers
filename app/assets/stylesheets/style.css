@@ -2,13 +2,10 @@ body {
 	background: url('white_carbon.png') fixed;
 }
 
-#repos_container {
+#repo-container-back{
 	display: block;
 	margin: auto;
-	margin-top: 30px;
-	background: #eaeaea;
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
+	padding-top: 20px;
 }
 
 .profile-section-header {
@@ -96,4 +93,13 @@ body {
 
 #repo-container-back {
 	margin-top: 20px;
+}
+
+#repo-name-wrapper {
+	height: 20px;
+	margin-bottom: 35px;
+}
+
+#repo-name {
+	font-size: 22px;
 }
