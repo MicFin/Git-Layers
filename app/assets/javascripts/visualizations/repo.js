@@ -60,7 +60,10 @@ var Repo = {
 						.transition()
 						.duration(2000)
 						.attr('rx', 15);
+
+							Repo.displayRepoName($(this)[0]['__data__']['name']);
 					})
+
 					.on('mouseleave', function() {
 						d3.select(this)
 						.transition()
@@ -80,7 +83,7 @@ var Repo = {
 		var new_canvas;
 
 		$('#repo-container-back')
-			.css('height', h + 60)
+			.css('height', h + 105)
 			.css('padding-left', function() {
 				return $(window).width()/2 - 450;
 			})
@@ -132,5 +135,9 @@ var Repo = {
 				.attr('height', 0)
 				.attr('width', 0)
 				.remove();
+	},
+
+	displayRepoName: function(name) {
+		$('#repo-name').html(name);
 	}
 };
