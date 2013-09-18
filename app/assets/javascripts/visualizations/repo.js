@@ -107,8 +107,8 @@ var Repo = {
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
 
-			$('.primary').removeClass('primary').addClass('info');
-			$(this).parent().removeClass('info').addClass('primary');
+			$('.default').removeClass('default').addClass('info');
+			$(this).parent().removeClass('info').addClass('default');
 
 			$.ajax({
 				url: '/users/repos',
