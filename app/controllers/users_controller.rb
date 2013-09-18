@@ -94,6 +94,15 @@ class UsersController < ApplicationController
 		@user_repos.reject! do |repo|
 			!repo['language']
 		end
+		if sort_type == 'lang'
+			language_sorted = {}
+			@user_repos.each do |repo|
+				language_sorted[repo['language']] ||= []
+				language_sorted[repo['language']] << repo
+			end
+			@user_repos = language_sorted.values.flatten
+		end
+		puts @user_repos.count
 		respond_with @user_repos.to_json.html_safe
 	end
 

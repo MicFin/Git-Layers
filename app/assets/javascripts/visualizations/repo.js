@@ -11,7 +11,7 @@ var Repo = {
 	},
 
 	repoGrid: function(repos) {
-		console.log('rendering repo grid')
+		
 		var square_size = 60,
 			h = parseInt((repos.length / 15) + 1) * square_size;
 
@@ -61,7 +61,7 @@ var Repo = {
 						.duration(500)
 						.attr('rx', 15);
 
-							Repo.displayRepoName($(this)[0]['__data__']['name']);
+							Repo.displayRepoName($(this)[0]['__data__']['name'] + " (" + $(this)[0]['__data__']['language'] + ')');
 					})
 
 					.on('mouseleave', function() {
@@ -106,6 +106,10 @@ var Repo = {
 	activeSortButtons: function() {
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
+
+			$('.primary').removeClass('primary').addClass('info');
+			$(this).parent().removeClass('info').addClass('primary');
+
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',
