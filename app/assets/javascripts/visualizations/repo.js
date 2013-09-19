@@ -63,7 +63,7 @@ var Repo = {
 						.duration(2000)
 						.attr('rx', 15);
 
-							Repo.displayRepoName($(this)[0]['__data__']['name']);
+							Repo.displayRepoName($(this)[0]['__data__']['name'] + " (" + $(this)[0]['__data__']['language'] + ')');
 					})
 
 					.on('mouseleave', function() {
@@ -113,6 +113,10 @@ var Repo = {
 
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
+
+			$('.default').removeClass('default').addClass('info');
+			$(this).parent().removeClass('info').addClass('default');
+
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',

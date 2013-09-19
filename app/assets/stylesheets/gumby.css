@@ -476,10 +476,10 @@ form fieldset legend { padding: 5px 10px; }
 .btn.secondary, .skiplink.secondary { background: #42a35a; border: 1px solid #42a35a; }
 .btn.secondary:hover, .skiplink.secondary:hover { background: #5bbd73; }
 .btn.secondary:active, .skiplink.secondary:active { background: #337f46; }
-.btn.default, .skiplink.default { background: #f2f2f2; border: 1px solid #f2f2f2; color: #555555; border: 1px solid #f2f2f2; }
+.btn.default, .skiplink.default { background: #f2f2f2; border: 1px solid #b0b0b0; color: #555555; border: 1px solid #b0b0b0; }
 .btn.default:hover, .skiplink.default:hover { background: white; }
 .btn.default:active, .skiplink.default:active { background: #d8d8d8; }
-.btn.default:hover, .skiplink.default:hover { border: 1px solid #e5e5e5; }
+.btn.default:hover, .skiplink.default:hover { border: 1px solid #b0b0b0; }
 .btn.default a, .btn.default input, .btn.default button, .skiplink.default a, .skiplink.default input, .skiplink.default button { color: #555555; }
 .btn.info, .skiplink.info { background: #080808; border: 1px solid #4a4d50; }
 .btn.info:hover, .skiplink.info:hover { background: #63676a; }
