@@ -1,10 +1,7 @@
 <div class='profile-section-header'><h2>Repositories</h2></div>
 
 <script>
-	$(function() {
-		Repo.repoGrid(<%=@user_repos%>);
-		Repo.activeSortButtons();
-	})
+	Repo.initRepoLayout(<%=@user_repos%>)
 </script> 
 
 <div id='repo-container-back' class='content-container'>

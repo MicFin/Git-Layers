@@ -1,5 +1,24 @@
 var Repo = {
 
+	initRepoLayout: function(repos) {
+		$(function() {
+			Repo.noReposCheck(repos);
+			Repo.repoGrid(repos);
+			Repo.activeSortButtons();
+		});
+	},
+
+
+	noReposCheck: function(repos) {
+		if(!repos) {
+			$('#repo-name-wrapper').remove();
+			$('#sort-button-wrapper').remove();
+			$('#repo-container-back')
+				.append('<h1> Oh Noes!</h1>')
+				.append('<h3 id="repoless-message"> You Don\'t Have any Repos! </h3>');
+		}
+	},
+
 	displayRepos: function() {
 		$.ajax({
 			type: 'GET',
