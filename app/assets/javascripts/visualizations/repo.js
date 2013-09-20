@@ -1,13 +1,12 @@
 // Global namespace for repo-rendering and repo-fetching functions
 var Repo = {
 
-
 	grid_block_size : 60,
 	square_size: 50,
 	columns: 15,
 	canvas_width: 900,
 	calcCanvasHeight: function(repos) {
-		Repo.canvasHeight = parseInt((repos.length / Repo.columns) + 1) * Repo.grid_block_size;
+		Repo.canvasHeight = parseInt((repos.length / Repo.columns) + 1, 10) * Repo.grid_block_size;
 	},
 
 	// checks for no-repos, otherwise calls display functions 
@@ -22,8 +21,8 @@ var Repo = {
 				Repo.activeSortButtons();
 				$(window).resize(function() {
 					Repo.horizontalResize();
-				})
-			};
+				});
+			}
 		});
 	},
 
@@ -37,7 +36,7 @@ var Repo = {
 				.append('<h3 id="repoless-message"> You Don\'t Have any Repos! </h3>');
 				return false;
 		}
-		return true
+		return true;
 	},
 
 	// displays the repo grid on the page and sets event listeners for
@@ -68,10 +67,8 @@ var Repo = {
 				return (i % Repo.columns) * Repo.grid_block_size;
 			})
 			.attr('y', function(d, i){
-				return parseInt(i / Repo.columns) * Repo.grid_block_size;
+				return parseInt(i / Repo.columns, 10) * Repo.grid_block_size;
 			})
-
-			
 			.transition() // expands squares based randomly (within time limit)
 			.delay(function() {
 				return 500 + (Math.random() * (Math.random() + 2)) * 100;
@@ -171,7 +168,6 @@ var Repo = {
 					.remove();
 			});
 		},
-
 
 	// clears the canvas of all repos 
 	clearCanvas: function() {
