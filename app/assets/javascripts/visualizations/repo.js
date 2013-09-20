@@ -6,21 +6,29 @@ var Repo = {
 	square_size: 50,
 	columns: 15,
 	canvas_width: 900,
-
+	calcCanvasHeight: function(repos) {
+		Repo.canvasHeight = parseInt((repos.length / Repo.columns) + 1) * Repo.grid_block_size;
+	},
 
 	// checks for no-repos, otherwise calls display functions 
 	// to put grid on page
 	initRepoLayout: function(repos) {
 
 		$(function() {
-			Repo.noReposCheck(repos);
-			Repo.repoGrid(repos);
-			Repo.activeSortButtons();
+			
+			if(Repo.anyRepos(repos)) {
+				Repo.calcCanvasHeight(repos);
+				Repo.repoGrid(repos);
+				Repo.activeSortButtons();
+				$(window).resize(function() {
+					Repo.horizontalResize();
+				})
+			};
 		});
 	},
 
 	// displays alert on page if no repos are found for user
-	noReposCheck: function(repos) {
+	anyRepos: function(repos) {
 		if(!repos) {
 			$('#repo-name-wrapper').remove();
 			$('#sort-button-wrapper').remove();
@@ -35,11 +43,9 @@ var Repo = {
 	// displays the repo grid on the page and sets event listeners for
 	// individual squares
 	repoGrid: function(repos) {
-		
-			h = parseInt((repos.length / Repo.columns) + 1) * Repo.grid_block_size;
 
 		// creates svg canvas
-		svg = Repo.repoCanvas(h);
+		svg = Repo.repoCanvas();
 
 		// uses repos as data to create grid rectangles
 		rects = svg.selectAll('rect')
@@ -110,16 +116,16 @@ var Repo = {
 
 	// sets height of container based on num repos and creates svg canvas
 	// on top of back
-	repoCanvas: function(h) {
+	repoCanvas: function() {
 		
 		// sizes canvas
 		$('#repo-container-back')
-			.css('height', h + 105)
+			.css('height', Repo.canvasHeight + 105)
 			.css('padding-left', function() {
-				return $(window).width()/2 - 450;
+				return $(window).width()/2 - Repo.canvas_width/2;
 			})
 			.css('padding-right', function() {
-				return $(window).width()/2 - 450;
+				return $(window).width()/2 - Repo.canvas_width/2;
 			})
 			.animate({
 				'opacity': 1
@@ -128,12 +134,13 @@ var Repo = {
 		// creates svg canvas
 		var canvas = d3.select('#repo-container-back')
 			.append('svg')
-			.attr('height', h)
-			.attr('width', 900)
+			.attr('height', Repo.canvasHeight)
+			.attr('width', Repo.canvas_width)
 			.attr('id','repo-container-canvas');
 		return canvas;
 	},
 
+	// sets event listeners for sort buttons
 	activeSortButtons: function() {
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
@@ -146,6 +153,7 @@ var Repo = {
 		});
 	},
 
+	// calls the backend to get repos sorted in specified way
 	resortGrid: function(sortType) {
 			$.ajax({
 				url: '/users/repos',
@@ -164,6 +172,8 @@ var Repo = {
 			});
 		},
 
+
+	// clears the canvas of all repos 
 	clearCanvas: function() {
 			d3.selectAll('rect.repo')
 				.transition()
@@ -175,7 +185,21 @@ var Repo = {
 				.remove();
 	},
 
+	// changes the #repo-name tag to the input name
 	displayRepoName: function(name) {
 		$('#repo-name').html(name);
+	},
+
+	// recalculates the padding on either side of the canvas to center it
+	horizontalResize: function(name) {
+
+		$('#repo-container-back')
+			.css('padding-left', function() {
+				return $(window).width()/2 - 450;
+			})
+			.css('padding-right', function() {
+				return $(window).width()/2 - 450;
+			});
+
 	}
 };
