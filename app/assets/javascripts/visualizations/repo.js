@@ -19,16 +19,6 @@ var Repo = {
 		}
 	},
 
-	displayRepos: function() {
-		$.ajax({
-			type: 'GET',
-			dataType: 'json',
-			url: '/users/repos'
-		}).done(function(data) {
-			Repo.repoGrid(data);
-		});
-	},
-
 	repoGrid: function(repos) {
 		
 		var square_size = 60,
@@ -129,12 +119,12 @@ var Repo = {
 			$('.default').removeClass('default').addClass('info');
 			$(this).parent().removeClass('info').addClass('default');
 
-			Repo.rebuildCanvas($(this).attr('href').toString());
+			Repo.resortGrid($(this).attr('href').toString());
 
 		});
 	},
 
-	rebuildCanvas: function(sortType) {
+	resortGrid: function(sortType) {
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',
