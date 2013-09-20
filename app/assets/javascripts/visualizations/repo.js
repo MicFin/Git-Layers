@@ -129,10 +129,16 @@ var Repo = {
 			$('.default').removeClass('default').addClass('info');
 			$(this).parent().removeClass('info').addClass('default');
 
+			Repo.rebuildCanvas($(this).attr('href').toString());
+
+		});
+	},
+
+	rebuildCanvas: function(sortType) {
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',
-				data: {'sort_type':$(this).attr('href').toString()}
+				data: {'sort_type': sortType}
 			}).done(function(data) {
 				Repo.clearCanvas();
 				d3.select('#repo-container-canvas')
@@ -144,8 +150,7 @@ var Repo = {
 					})
 					.remove();
 			});
-		});
-	},
+		},
 
 	clearCanvas: function() {
 			d3.selectAll('rect.repo')
