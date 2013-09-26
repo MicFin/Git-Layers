@@ -1,6 +1,6 @@
 // Global namespace for repo-rendering and repo-fetching functions
 var Repo = {
-
+	
 	grid_block_size : 60,
 	square_size: 50,
 	columns: 15,
