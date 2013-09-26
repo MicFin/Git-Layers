@@ -81,12 +81,13 @@ class UsersController < ApplicationController
 	end
 
 	def repos
+
 		sort_type = params[:sort_type] || 'created'
 		user = User.find(current_user.id)
-		token = session[:user_access_token]
+
 		@user_repos = Rails.cache.fetch("user-repos-#{user.id}-#{sort_type}", expires_in: 9000.seconds) do 
 			JSON.parse(RestClient.get(user.repos_url, {params: 
-				{ access_token: token, 
+				{ access_token: session[:user_access_token], 
 					page: 1, 
 					per_page: 100, 
 					sort: sort_type}}))
@@ -95,15 +96,10 @@ class UsersController < ApplicationController
 			!repo['language']
 		end
 		if sort_type == 'lang'
-			language_sorted = {}
-			@user_repos.each do |repo|
-				language_sorted[repo['language']] ||= []
-				language_sorted[repo['language']] << repo
-			end
-			@user_repos = language_sorted.values.flatten
+			@user_repos = Repo.sort_repos_by_lang(@user_repos)
 		end
-		puts @user_repos.count
 		respond_with @user_repos.to_json.html_safe
+
 	end
 
 end
