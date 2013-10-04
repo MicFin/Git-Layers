@@ -3,21 +3,19 @@ class UsersController < ApplicationController
 
 	# defines protocol for github api callback using gihub gem to authorize
 	def callback
-
-		token = JSON.parse(RestClient.post("https://github.com/login/oauth/access_token",
-	    {client_id: ENV['CLIENT_ID'],
-	  	 client_secret: ENV['CLIENT_SECRET'],
-	     code: params[:code]
-	    },{
-	    :accept => :json
-	  }))["access_token"];
-
-		github = Github.new do |config|
+		
+		session[:github] = Github.new do |config|
 			config.client_id = ENV['CLIENT_ID']
 			config.client_secret = ENV['CLIENT_SECRET']
-			config.oauth_token = token
+			config.oauth_token =  JSON.parse(RestClient.post("https://github.com/login/oauth/access_token",
+		    {client_id: ENV['CLIENT_ID'],
+		  	 client_secret: ENV['CLIENT_SECRET'],
+		     code: params[:code]
+		    },{
+		    	:accept => :json
+		  	}))["access_token"];
 		end
-
+		redirect_to load_user_path
 	end
 
 
