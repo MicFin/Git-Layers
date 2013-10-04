@@ -1,24 +1,31 @@
 class UsersController < ApplicationController
 	respond_to :json
-	# defines protocol for github api callback
+
+	# defines protocol for github api callback using gihub gem to authorize
 	def callback
-		puts params[:code]
-		result = RestClient.post("https://github.com/login/oauth/access_token",
+
+		token = JSON.parse(RestClient.post("https://github.com/login/oauth/access_token",
 	    {client_id: ENV['CLIENT_ID'],
-	     client_secret: ENV['CLIENT_SECRET'],
+	  	 client_secret: ENV['CLIENT_SECRET'],
 	     code: params[:code]
 	    },{
-	     :accept => :json
-	    })
-		puts result 
-		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
+	    :accept => :json
+	  }))["access_token"];
+
+		github = Github.new do |config|
+			config.client_id = ENV['CLIENT_ID']
+			config.client_secret = ENV['CLIENT_SECRET']
+			config.oauth_token = token
+		end
+
 	end
 
 
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
+		binding.pry
 		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
-			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
+			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => @@github.oauth_token}}))
 		end
 
 		stored_user = User.where(github_id: github_user['id']).first
