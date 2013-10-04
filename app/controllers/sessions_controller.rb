@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
   # redirects to index page
 	def destroy
 		session[:user_id] = nil
-		session[:github] = nil
+		session[:user_access_token] = nil
 		redirect_to root_url, notice: 'Logged Out'
 	end
 

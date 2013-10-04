@@ -1,30 +1,24 @@
 class UsersController < ApplicationController
 	respond_to :json
-
-	# defines protocol for github api callback using gihub gem to authorize
+	# defines protocol for github api callback
 	def callback
-
-		session[:github] = Github.new do |config|
-			config.client_id = ENV['CLIENT_ID']
-			config.client_secret = ENV['CLIENT_SECRET']
-			config.per_page = 100
-			config.oauth_token =  JSON.parse(RestClient.post("https://github.com/login/oauth/access_token",
-		    {client_id: ENV['CLIENT_ID'],
-		  	 client_secret: ENV['CLIENT_SECRET'],
-		     code: params[:code]
-		    },{
-		    	:accept => :json
-		  	}))["access_token"];
-		end
-		redirect_to load_user_path
+		puts params[:code]
+		result = RestClient.post("https://github.com/login/oauth/access_token",
+	    {client_id: ENV['CLIENT_ID'],
+	     client_secret: ENV['CLIENT_SECRET'],
+	     code: params[:code]
+	    },{
+	     :accept => :json
+	    })
+		puts result 
+		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
 
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
-		github_user = Rails.cache.fetch("#{session[:github].oauth_token}", :expires_in => 9000.seconds) do 
-			# binding.pry
-			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => session[:github].oauth_token}}))
+		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
+			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
 		end
 
 		stored_user = User.where(github_id: github_user['id']).first
@@ -70,9 +64,19 @@ class UsersController < ApplicationController
 		if !current_user
 			redirect_to '/'
 		else 
-			# user = User.find(current_user.id)
-			@user_repos = session[:github].repos.all.body
-			binding.pry
+			user = User.find(current_user.id)
+			token = session[:user_access_token]
+			@user_repos = Rails.cache.fetch("user-repos-#{user.id}-created", expires_in: 9000.seconds) do 
+				JSON.parse(RestClient.get(user.repos_url, {params: 
+					{ access_token: token, 
+						page: 1, 
+						per_page: 100, 
+						sort: 'created'}}))
+			end
+			@user_repos.reject! do |repo|
+				!repo['language']
+			end
+			@user_repos = @user_repos.to_json.html_safe
 		end
 	end
 
