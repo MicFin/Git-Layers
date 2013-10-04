@@ -3,10 +3,11 @@ class UsersController < ApplicationController
 
 	# defines protocol for github api callback using gihub gem to authorize
 	def callback
-		
+
 		session[:github] = Github.new do |config|
 			config.client_id = ENV['CLIENT_ID']
 			config.client_secret = ENV['CLIENT_SECRET']
+			config.per_page = 100
 			config.oauth_token =  JSON.parse(RestClient.post("https://github.com/login/oauth/access_token",
 		    {client_id: ENV['CLIENT_ID'],
 		  	 client_secret: ENV['CLIENT_SECRET'],
@@ -21,9 +22,9 @@ class UsersController < ApplicationController
 
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
-		binding.pry
-		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
-			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => @@github.oauth_token}}))
+		github_user = Rails.cache.fetch("#{session[:github].oauth_token}", :expires_in => 9000.seconds) do 
+			# binding.pry
+			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => session[:github].oauth_token}}))
 		end
 
 		stored_user = User.where(github_id: github_user['id']).first
@@ -69,19 +70,9 @@ class UsersController < ApplicationController
 		if !current_user
 			redirect_to '/'
 		else 
-			user = User.find(current_user.id)
-			token = session[:user_access_token]
-			@user_repos = Rails.cache.fetch("user-repos-#{user.id}-created", expires_in: 9000.seconds) do 
-				JSON.parse(RestClient.get(user.repos_url, {params: 
-					{ access_token: token, 
-						page: 1, 
-						per_page: 100, 
-						sort: 'created'}}))
-			end
-			@user_repos.reject! do |repo|
-				!repo['language']
-			end
-			@user_repos = @user_repos.to_json.html_safe
+			# user = User.find(current_user.id)
+			@user_repos = session[:github].repos.all.body
+			binding.pry
 		end
 	end
 
