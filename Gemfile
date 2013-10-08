@@ -34,9 +34,15 @@ gem 'rest-client'
 gem 'memcachier'
 gem 'dalli'
 
+# newrelic
+gem 'newrelic_rpm'
+
 group :doc do
+
   gem 'sdoc', require: false
+
 end
+
 
 
 group :development, :test do
