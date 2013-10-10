@@ -10,7 +10,6 @@ class UsersController < ApplicationController
 	    },{
 	     :accept => :json
 	    })
-		puts result 
 		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
