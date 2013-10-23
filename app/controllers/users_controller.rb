@@ -17,7 +17,8 @@ class UsersController < ApplicationController
 	# loads user into databse or updates user if nonexistant or out of date
 	def load
 		github_user = Rails.cache.fetch("#{params['access_token']}", :expires_in => 9000.seconds) do 
-			JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
+			result = JSON.parse(RestClient.get("https://api.github.com/user", {params: {:access_token => params[:access_token]}}))
+			puts result
 		end
 
 		stored_user = User.where(github_id: github_user['id']).first
