@@ -9,4 +9,8 @@ class Repo
 		return language_sorted.values.flatten
 	end
 
+	def self.split_by_contributed(repos)
+		repos.reject do |repo|
+			repo.owner == current_user.login
+		end
 end

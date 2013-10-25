@@ -5,7 +5,7 @@ GitLayers::Application.routes.draw do
   get 'sessions/destroy', to: 'sessions#destroy', as: 'sessions_destroy'
   get 'users/load', to: 'users#load', as: 'load_user'
   get 'users/callback', to: 'users#callback'
-  get 'users/profile', to: 'users#profile', as: 'user_profile'
+  get 'profile', to: 'users#profile', as: 'user_profile'
   get 'users/repos', to: 'users#repos', as: 'user_repos'
 
 end
