@@ -9,10 +9,15 @@ class Repo
 		return language_sorted.values.flatten
 	end
 
-	def self.split_by_contributed(repos, user_login)
+	def self.split_by_forked(repos, user_login)
 		repos.reject! do |repo|
 			!repo['fork']
 		end
-		return repos
+	end
+
+	def self.split_by_owned(repos, user_login)
+		repos.reject! do |repo|
+			repo['fork']
+		end
 	end
 end

@@ -83,7 +83,8 @@ class UsersController < ApplicationController
 	def repos
 
 		sort_type = params[:sort_type] || 'created'
-		split_type = params[:split_type] || false
+		split_type = params[:split_type]
+
 		user = User.find(current_user.id)
 
 		@user_repos = Rails.cache.fetch("user-repos-#{user.id}-#{sort_type}", expires_in: 9000.seconds) do 
@@ -102,13 +103,12 @@ class UsersController < ApplicationController
 			@user_repos = Repo.sort_repos_by_lang(@user_repos)
 		end
 
-		# if split_type
-		# 	if split_type == 'contributed_to'
-			@user_repos = Repo.split_by_contributed(@user_repos, current_user['login'])
-		# 	elsif split_type == 'owner'
-		# 		@user_repos = Repo.split_by_owned(@user_repos)
-		# 	end
-		# end
+		if split_type == 'forked'
+			@user_repos = Repo.split_by_forked(@user_repos, current_user['login'])
+		elsif split_type == 'owned'
+			@user_repos = Repo.split_by_owned(@user_repos, current_user['login'])
+		end
+
 		respond_with @user_repos.to_json.html_safe
 	end
 

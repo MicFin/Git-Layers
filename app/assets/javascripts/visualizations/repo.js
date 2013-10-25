@@ -8,8 +8,10 @@ var Repo = {
 	canvas_height: 0,
 
 	calcCanvasHeight: function(repos) {
-		Repo.canvas_height = parseInt((repos.length / Repo.columns) + 1, 10) * Repo.grid_block_size;
-		console.log(Repo.canvas_height)
+		var adjustment = 1, number_repos = repos.length, columns = Repo.columns;
+		if(number_repos % columns === 0) { adjustment = 0 }
+		Repo.canvas_height = parseInt((number_repos/ columns) + adjustment, 10) * Repo.grid_block_size;
+
 	},
 
 	// checks for no-repos, otherwise calls display functions 
@@ -21,7 +23,7 @@ var Repo = {
 			if(Repo.anyRepos(repos)) {
 				Repo.calcCanvasHeight(repos);
 				Repo.repoGrid(repos);
-				Repo.activeSortButtons();
+				Repo.activateButtons();
 				$(window).resize(function() {
 					Repo.horizontalResize();
 				});
@@ -144,25 +146,37 @@ var Repo = {
 	},
 
 	// sets event listeners for sort buttons
-	activeSortButtons: function() {
+	activateButtons: function() {
 
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
 
-			$('.default').removeClass('default').addClass('info');
-			$(this).parent().removeClass('info').addClass('default');
+			$('.selected-sort-button').removeClass('default').addClass('info');
+			$(this).parent().removeClass('info').addClass('default selected-sort-button');
+			$('.selected-sort').removeClass('selected-sort');
+			$(this).addClass('selected-sort');
+			Repo.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 
-			Repo.resortGrid($(this).attr('href').toString());
+		});
+
+		$('.split-button').click(function(e) {
+			e.preventDefault();
+
+			$('.selected-split-button').removeClass('default').addClass('info');
+			$(this).parent().removeClass('info').addClass('default selected-split-button');
+			$('.selected-split').removeClass('selected-split');
+			$(this).addClass('selected-split');
+			Repo.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 
 		});
 	},
 
 	// calls the backend to get repos sorted in specified way and displays them on grid
-	resortGrid: function(sortType) {
+	resortGrid: function(sortType, splitType) {
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',
-				data: {'sort_type': sortType}
+				data: {'sort_type': sortType, 'split_type': splitType}
 			}).done(function(data) {
 				Repo.clearCanvas();
 				d3.select('#repo-container-canvas')
@@ -170,6 +184,7 @@ var Repo = {
 					.delay(500)
 					.duration(10)
 					.each('end', function() {
+						Repo.calcCanvasHeight(data);
 						Repo.repoGrid(data);
 					})
 					.remove();
