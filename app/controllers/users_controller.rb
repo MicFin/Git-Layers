@@ -2,7 +2,6 @@ class UsersController < ApplicationController
 	respond_to :json
 	# defines protocol for github api callback
 	def callback
-		puts params[:code]
 		result = RestClient.post("https://github.com/login/oauth/access_token",
 	    {client_id: ENV['CLIENT_ID'],
 	     client_secret: ENV['CLIENT_SECRET'],
@@ -10,7 +9,6 @@ class UsersController < ApplicationController
 	    },{
 	     :accept => :json
 	    })
-		puts result 
 		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
@@ -83,6 +81,7 @@ class UsersController < ApplicationController
 	def repos
 
 		sort_type = params[:sort_type] || 'created'
+		split_type = params[:split_type] || false
 		user = User.find(current_user.id)
 
 		@user_repos = Rails.cache.fetch("user-repos-#{user.id}-#{sort_type}", expires_in: 9000.seconds) do 
@@ -95,11 +94,21 @@ class UsersController < ApplicationController
 		@user_repos.reject! do |repo|
 			!repo['language']
 		end
+
 		if sort_type == 'lang'
 			@user_repos = Repo.sort_repos_by_lang(@user_repos)
 		end
-		respond_with @user_repos.to_json.html_safe
 
+		# if split_type
+		# 	if split_type == 'contributed_to'
+		# 		@user_repos = Repo.split_by_contributed(@user_repos)
+		# 	elsif split_type == 'owner'
+		# 		@user_repos = Repo.split_by_owned(@user_repos)
+		# 	end
+		# end
+		binding.pry
+
+		respond_with @user_repos.to_json.html_safe
 	end
 
 end

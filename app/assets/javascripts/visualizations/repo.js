@@ -24,6 +24,7 @@ var Repo = {
 				});
 			}
 		});
+		
 	},
 
 	// displays alert on page if no repos are found for user
@@ -88,7 +89,7 @@ var Repo = {
 							return Color.stringHover(d['language'].toString()); //changes square colors
 						})
 						.transition()
-						.duration(500)
+						.duration(2000)
 						.attr('rx', 15);
 							Repo.displayRepoName($(this)[0]['__data__']['name'] + // displays repo name
 								" (" + $(this)[0]['__data__']['language'] + ')'); // displays repo language (main)
@@ -101,21 +102,22 @@ var Repo = {
 						.style('fill', function(d, i){
 							return Color.stringColor(d['language'].toString()); // resets color
 						})
-						.transition()
-						.duration(500)
 						.attr('rx', 5);
 					})
 					.on('click', function() {
 						window.open(this.__data__['html_url']); // opens github page on click
 					});
 			});
+
 	},
+
 
 	// sets height of container based on num repos and creates svg canvas
 	// on top of back
 	repoCanvas: function() {
 		
 		// sizes canvas
+
 		$('#repo-container-back')
 			.css('height', Repo.canvasHeight + 105)
 			.css('padding-left', function() {
@@ -134,11 +136,13 @@ var Repo = {
 			.attr('height', Repo.canvasHeight)
 			.attr('width', Repo.canvas_width)
 			.attr('id','repo-container-canvas');
+
 		return canvas;
 	},
 
 	// sets event listeners for sort buttons
 	activeSortButtons: function() {
+
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
 
@@ -171,6 +175,7 @@ var Repo = {
 
 	// clears the canvas of all repos 
 	clearCanvas: function() {
+
 			d3.selectAll('rect.repo')
 				.transition()
 				.duration(function() {
@@ -179,12 +184,14 @@ var Repo = {
 				.attr('height', 0)
 				.attr('width', 0)
 				.remove();
+
 	},
 
 	// changes the #repo-name tag to the input name
 	displayRepoName: function(name) {
 		$('#repo-name').html(name);
 	},
+
 
 	// recalculates the padding on either side of the canvas to center it
 	horizontalResize: function(name) {
