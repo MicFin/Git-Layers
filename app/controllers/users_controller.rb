@@ -24,6 +24,7 @@ class UsersController < ApplicationController
 			unless stored_user.updated_at == github_user['updated_at']
 				stored_user.update_attributes(
 					name: github_user['name'],
+					login: github_user['login'],
 					url: github_user['url'],
 					html_url: github_user['html_url'],
 					repos_url: github_user['repos_url'],
@@ -41,6 +42,7 @@ class UsersController < ApplicationController
 		else
 			stored_user = User.create(
 				name: github_user['name'],
+				login: github_user['login'],
 				url: github_user['url'],
 				html_url: github_user['html_url'],
 				repos_url: github_user['repos_url'],
@@ -91,6 +93,7 @@ class UsersController < ApplicationController
 					per_page: 100, 
 					sort: sort_type}}))
 		end
+
 		@user_repos.reject! do |repo|
 			!repo['language']
 		end
@@ -101,13 +104,11 @@ class UsersController < ApplicationController
 
 		# if split_type
 		# 	if split_type == 'contributed_to'
-		# 		@user_repos = Repo.split_by_contributed(@user_repos)
+			@user_repos = Repo.split_by_contributed(@user_repos, current_user['login'])
 		# 	elsif split_type == 'owner'
 		# 		@user_repos = Repo.split_by_owned(@user_repos)
 		# 	end
 		# end
-		binding.pry
-
 		respond_with @user_repos.to_json.html_safe
 	end
 

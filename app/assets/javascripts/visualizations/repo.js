@@ -5,8 +5,11 @@ var Repo = {
 	square_size: 50,
 	columns: 15,
 	canvas_width: 900,
+	canvas_height: 0,
+
 	calcCanvasHeight: function(repos) {
-		Repo.canvasHeight = parseInt((repos.length / Repo.columns) + 1, 10) * Repo.grid_block_size;
+		Repo.canvas_height = parseInt((repos.length / Repo.columns) + 1, 10) * Repo.grid_block_size;
+		console.log(Repo.canvas_height)
 	},
 
 	// checks for no-repos, otherwise calls display functions 
@@ -119,7 +122,7 @@ var Repo = {
 		// sizes canvas
 
 		$('#repo-container-back')
-			.css('height', Repo.canvasHeight + 105)
+			.css('height', Repo.canvas_height + 105)
 			.css('padding-left', function() {
 				return $(window).width()/2 - Repo.canvas_width/2;
 			})
@@ -133,7 +136,7 @@ var Repo = {
 		// creates svg canvas
 		var canvas = d3.select('#repo-container-back')
 			.append('svg')
-			.attr('height', Repo.canvasHeight)
+			.attr('height', Repo.canvas_height)
 			.attr('width', Repo.canvas_width)
 			.attr('id','repo-container-canvas');
 
@@ -154,7 +157,7 @@ var Repo = {
 		});
 	},
 
-	// calls the backend to get repos sorted in specified way
+	// calls the backend to get repos sorted in specified way and displays them on grid
 	resortGrid: function(sortType) {
 			$.ajax({
 				url: '/users/repos',
