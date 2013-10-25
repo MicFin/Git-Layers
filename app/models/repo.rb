@@ -15,7 +15,7 @@ class Repo
 		end
 	end
 
-	def self.split_by_owned(repos, user_login)
+	def self.split_by_created(repos, user_login)
 		repos.reject! do |repo|
 			repo['fork']
 		end

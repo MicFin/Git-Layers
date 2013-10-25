@@ -7,11 +7,25 @@ var Repo = {
 	canvas_width: 900,
 	canvas_height: 0,
 
+	demensionate: function(number_repos) {
+		if(number_repos <= 30) {
+			Repo.columns = 11;
+			Repo.canvas_width = 660
+		}
+		else if(number_repos <= 50) {
+			Repo.columns = 13;
+			Repo.canvas_width = 780;
+		}
+		else {
+			Repo.columns = 15;
+			Repo.canvas_width = 900;
+		}
+	},
+
 	calcCanvasHeight: function(repos) {
-		var adjustment = 1, number_repos = repos.length, columns = Repo.columns;
+		var adjustment = 1, columns = Repo.columns, number_repos = repos.length
 		if(number_repos % columns === 0) { adjustment = 0 }
 		Repo.canvas_height = parseInt((number_repos/ columns) + adjustment, 10) * Repo.grid_block_size;
-
 	},
 
 	// checks for no-repos, otherwise calls display functions 
@@ -122,7 +136,6 @@ var Repo = {
 	repoCanvas: function() {
 		
 		// sizes canvas
-
 		$('#repo-container-back')
 			.css('height', Repo.canvas_height + 105)
 			.css('padding-left', function() {
@@ -150,7 +163,6 @@ var Repo = {
 
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
-
 			$('.selected-sort-button').removeClass('default').addClass('info');
 			$(this).parent().removeClass('info').addClass('default selected-sort-button');
 			$('.selected-sort').removeClass('selected-sort');
@@ -161,7 +173,6 @@ var Repo = {
 
 		$('.split-button').click(function(e) {
 			e.preventDefault();
-
 			$('.selected-split-button').removeClass('default').addClass('info');
 			$(this).parent().removeClass('info').addClass('default selected-split-button');
 			$('.selected-split').removeClass('selected-split');
@@ -184,6 +195,9 @@ var Repo = {
 					.delay(500)
 					.duration(10)
 					.each('end', function() {
+						
+						Repo.demensionate(data.length);
+						Repo.horizontalResize();
 						Repo.calcCanvasHeight(data);
 						Repo.repoGrid(data);
 					})
@@ -212,14 +226,14 @@ var Repo = {
 
 
 	// recalculates the padding on either side of the canvas to center it
-	horizontalResize: function(name) {
+	horizontalResize: function() {
 
 		$('#repo-container-back')
 			.css('padding-left', function() {
-				return $(window).width()/2 - 450;
+				return $(window).width()/2 - Repo.canvas_width/2;
 			})
 			.css('padding-right', function() {
-				return $(window).width()/2 - 450;
+				return $(window).width()/2 - Repo.canvas_width/2;
 			});
 
 	}

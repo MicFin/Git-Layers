@@ -105,8 +105,8 @@ class UsersController < ApplicationController
 
 		if split_type == 'forked'
 			@user_repos = Repo.split_by_forked(@user_repos, current_user['login'])
-		elsif split_type == 'owned'
-			@user_repos = Repo.split_by_owned(@user_repos, current_user['login'])
+		elsif split_type == 'created'
+			@user_repos = Repo.split_by_created(@user_repos, current_user['login'])
 		end
 
 		respond_with @user_repos.to_json.html_safe
