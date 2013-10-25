@@ -87,8 +87,13 @@ body {
 #sort-button-wrapper {
 	text-align: center;
 	margin: auto;
-	margin-top: 40px;
-	margin-bottom: 40px;
+	margin-top: 20px;
+}
+
+#split-button-wrapper {
+	text-align: center;
+	margin: auto;
+	margin-top: 20px;
 }
 
 #repo-container-back {

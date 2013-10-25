@@ -5,8 +5,27 @@ var Repo = {
 	square_size: 50,
 	columns: 15,
 	canvas_width: 900,
+	canvas_height: 0,
+
+	demensionate: function(number_repos) {
+		if(number_repos <= 30) {
+			Repo.columns = 11;
+			Repo.canvas_width = 660
+		}
+		else if(number_repos <= 50) {
+			Repo.columns = 13;
+			Repo.canvas_width = 780;
+		}
+		else {
+			Repo.columns = 15;
+			Repo.canvas_width = 900;
+		}
+	},
+
 	calcCanvasHeight: function(repos) {
-		Repo.canvasHeight = parseInt((repos.length / Repo.columns) + 1, 10) * Repo.grid_block_size;
+		var adjustment = 1, columns = Repo.columns, number_repos = repos.length
+		if(number_repos % columns === 0) { adjustment = 0 }
+		Repo.canvas_height = parseInt((number_repos/ columns) + adjustment, 10) * Repo.grid_block_size;
 	},
 
 	// checks for no-repos, otherwise calls display functions 
@@ -18,7 +37,7 @@ var Repo = {
 			if(Repo.anyRepos(repos)) {
 				Repo.calcCanvasHeight(repos);
 				Repo.repoGrid(repos);
-				Repo.activeSortButtons();
+				Repo.activateButtons();
 				$(window).resize(function() {
 					Repo.horizontalResize();
 				});
@@ -117,9 +136,8 @@ var Repo = {
 	repoCanvas: function() {
 		
 		// sizes canvas
-
 		$('#repo-container-back')
-			.css('height', Repo.canvasHeight + 105)
+			.css('height', Repo.canvas_height + 105)
 			.css('padding-left', function() {
 				return $(window).width()/2 - Repo.canvas_width/2;
 			})
@@ -133,7 +151,7 @@ var Repo = {
 		// creates svg canvas
 		var canvas = d3.select('#repo-container-back')
 			.append('svg')
-			.attr('height', Repo.canvasHeight)
+			.attr('height', Repo.canvas_height)
 			.attr('width', Repo.canvas_width)
 			.attr('id','repo-container-canvas');
 
@@ -141,25 +159,35 @@ var Repo = {
 	},
 
 	// sets event listeners for sort buttons
-	activeSortButtons: function() {
+	activateButtons: function() {
 
 		$('.sort-button').click(function(e) {
 			e.preventDefault();
+			$('.selected-sort-button').removeClass('default').addClass('info');
+			$(this).parent().removeClass('info').addClass('default selected-sort-button');
+			$('.selected-sort').removeClass('selected-sort');
+			$(this).addClass('selected-sort');
+			Repo.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 
-			$('.default').removeClass('default').addClass('info');
-			$(this).parent().removeClass('info').addClass('default');
+		});
 
-			Repo.resortGrid($(this).attr('href').toString());
+		$('.split-button').click(function(e) {
+			e.preventDefault();
+			$('.selected-split-button').removeClass('default').addClass('info');
+			$(this).parent().removeClass('info').addClass('default selected-split-button');
+			$('.selected-split').removeClass('selected-split');
+			$(this).addClass('selected-split');
+			Repo.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 
 		});
 	},
 
-	// calls the backend to get repos sorted in specified way
-	resortGrid: function(sortType) {
+	// calls the backend to get repos sorted in specified way and displays them on grid
+	resortGrid: function(sortType, splitType) {
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',
-				data: {'sort_type': sortType}
+				data: {'sort_type': sortType, 'split_type': splitType}
 			}).done(function(data) {
 				Repo.clearCanvas();
 				d3.select('#repo-container-canvas')
@@ -167,6 +195,10 @@ var Repo = {
 					.delay(500)
 					.duration(10)
 					.each('end', function() {
+						
+						Repo.demensionate(data.length);
+						Repo.horizontalResize();
+						Repo.calcCanvasHeight(data);
 						Repo.repoGrid(data);
 					})
 					.remove();
@@ -194,14 +226,14 @@ var Repo = {
 
 
 	// recalculates the padding on either side of the canvas to center it
-	horizontalResize: function(name) {
+	horizontalResize: function() {
 
 		$('#repo-container-back')
 			.css('padding-left', function() {
-				return $(window).width()/2 - 450;
+				return $(window).width()/2 - Repo.canvas_width/2;
 			})
 			.css('padding-right', function() {
-				return $(window).width()/2 - 450;
+				return $(window).width()/2 - Repo.canvas_width/2;
 			});
 
 	}
