@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'rest-client'
 
+gem 'git-layer'
 # for caching 
 gem 'memcachier'
 gem 'dalli'

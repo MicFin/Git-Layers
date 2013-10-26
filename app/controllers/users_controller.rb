@@ -9,6 +9,7 @@ class UsersController < ApplicationController
 	    },{
 	     :accept => :json
 	    })
+		@@github = Github::Client.new(access_token: result)
 		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
