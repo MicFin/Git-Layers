@@ -1,12 +1,9 @@
 source 'https://rubygems.org'
-
 # Ruby V.2.0.0
 ruby '2.0.0'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
-
-# github api wrapper. 
-gem 'github_api'
 
 # Use sqlite3 as the database for Active Record
 gem 'pg'
@@ -33,10 +30,12 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'rest-client'
 
-gem 'git-layer'
 # for caching 
 gem 'memcachier'
+
 gem 'dalli'
+
+gem 'git-layer'
 
 group :doc do
   gem 'sdoc', require: false
@@ -44,6 +43,8 @@ end
 
 
 group :development, :test do
+
+  
 
   gem 'rspec-rails', '~> 2.0'
 

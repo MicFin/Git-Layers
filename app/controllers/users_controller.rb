@@ -1,3 +1,5 @@
+
+
 class UsersController < ApplicationController
 	respond_to :json
 	# defines protocol for github api callback
@@ -9,7 +11,8 @@ class UsersController < ApplicationController
 	    },{
 	     :accept => :json
 	    })
-		@@github = Github::Client.new(access_token: result)
+		@@github = Github.new(access_token: JSON.parse(result)['access_token'])
+		binding.pry
 		redirect_to load_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 
