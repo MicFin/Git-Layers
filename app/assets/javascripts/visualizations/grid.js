@@ -8,21 +8,11 @@ var Grid = {
 	CANVAS_HEIGHT: 0,
 
 	setGridDimensions: function(number_repos) {
-		if(number_repos < 9) {
-			Grid.COLUMNS = number_repos;
-		}
-		else if(number_repos <= 40) {
-			Grid.COLUMNS = 9;
-		}
-		else if(number_repos <= 50) {
-			Grid.COLUMNS = 11;
-		}
-		else if(number_repos <= 60) {
-			Grid.COLUMNS = 13;
-		}
-		else {
-			Grid.COLUMNS = 15;
-		}
+		if(number_repos < 9) { Grid.COLUMNS = number_repos; }
+		else if(number_repos <= 40) { Grid.COLUMNS = 9; }
+		else if(number_repos <= 50) { Grid.COLUMNS = 11; }
+		else if(number_repos <= 60) { Grid.COLUMNS = 13; }
+		else { Grid.COLUMNS = 15; }
 		Grid.CANVAS_WIDTH = Grid.GRID_BLOCK_SIZE * Grid.COLUMNS
 	},
 
@@ -167,7 +157,7 @@ var Grid = {
 		return canvas;
 	},
 
-	// sets event listeners for sort buttons
+	// sets event listeners for sort and split buttons
 	activateButtons: function() {
 
 		$('.sort-button').click(function(e) {
@@ -177,8 +167,8 @@ var Grid = {
 			$('.selected-sort').removeClass('selected-sort');
 			$(this).addClass('selected-sort');
 			Grid.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
-
 		});
+
 
 		$('.split-button').click(function(e) {
 			e.preventDefault();
