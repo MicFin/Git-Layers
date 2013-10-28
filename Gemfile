@@ -35,8 +35,6 @@ gem 'memcachier'
 
 gem 'dalli'
 
-gem 'git-layer'
-
 group :doc do
   gem 'sdoc', require: false
 end

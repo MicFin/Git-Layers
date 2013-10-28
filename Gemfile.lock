@@ -63,7 +63,6 @@ GEM
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
-    git-layer (0.2.0)
     hike (1.2.3)
     i18n (0.6.5)
     jbuilder (1.5.1)
@@ -189,7 +188,6 @@ DEPENDENCIES
   dotenv
   dotenv-rails
   foreman
-  git-layer
   jbuilder (~> 1.2)
   jquery-rails
   memcachier
