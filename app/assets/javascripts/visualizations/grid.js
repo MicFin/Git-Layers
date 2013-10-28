@@ -1,4 +1,4 @@
-// Global namespace for repo-rendering and repo-fetching functions
+// Global namespace for Grid rendering functions
 var Grid = {
 	
 	GRID_BLOCK_SIZE : 60,
@@ -118,11 +118,13 @@ var Grid = {
 						})
 						.attr('rx', 5);
 					})
-					.on('click', function() {
-						window.open(this.__data__['html_url']); // opens github page on click
+					.on('click', function(d, i) {
+						// window.open(this.__data__['html_url']); // opens github page on click
+						Grid.clearCanvas();
+						Grid.closeGrid();
+						Repo.renderRepo(d);
 					});
 			});
-
 	},
 
 
@@ -198,7 +200,7 @@ var Grid = {
 						Grid.setGridDimensions(data.length);
 						Grid.horizontalResize();
 						Grid.calcCanvasHeight(data);
-						Grid.repoGrid(data);
+						Grid.writeRepoGrid(data);
 					})
 					.remove();
 			});
@@ -207,15 +209,29 @@ var Grid = {
 	// clears the canvas of all repos 
 	clearCanvas: function() {
 
-			d3.selectAll('rect.repo')
-				.transition()
-				.duration(function() {
-					return (Math.random() * (Math.random() + 1)) * 300;
-				})
-				.attr('height', 0)
-				.attr('width', 0)
-				.remove();
+		d3.selectAll('rect.repo')
+			.transition()
+			.duration(function() {
+				return (Math.random() * (Math.random() + 1)) * 300;
+			})
+			.attr('height', 0)
+			.attr('width', 0)
+			.remove();
+	},
 
+	closeGrid: function() {
+		$('#repo-container-back').animate({
+			'height': 0,
+			'padding': 0,
+			'opacity': 0
+		},1000, function() {
+			$(this).children().remove();
+		});
+		$('#sort-button-wrapper, #split-button-wrapper').animate({
+			'opacity': 0,
+		},1000, function() {
+			$(this).remove();
+		});
 	},
 
 	// changes the #repo-name tag to the input name
@@ -234,6 +250,5 @@ var Grid = {
 			.css('padding-right', function() {
 				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 			});
-
 	}
 };
