@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
-
 # Ruby V.2.0.0
 ruby '2.0.0'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
@@ -32,6 +32,7 @@ gem 'rest-client'
 
 # for caching 
 gem 'memcachier'
+
 gem 'dalli'
 
 # newrelic
@@ -46,6 +47,8 @@ end
 
 
 group :development, :test do
+
+  
 
   gem 'rspec-rails', '~> 2.0'
 

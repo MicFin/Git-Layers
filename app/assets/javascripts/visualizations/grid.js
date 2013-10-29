@@ -1,45 +1,39 @@
 // Global namespace for repo-rendering and repo-fetching functions
-var Repo = {
+var Grid = {
 	
-	grid_block_size : 60,
-	square_size: 50,
-	columns: 15,
-	canvas_width: 900,
-	canvas_height: 0,
+	GRID_BLOCK_SIZE : 60,
+	SQUARE_SIZE: 50,
+	COLUMNS: 15,
+	CANVAS_WIDTH: 900,
+	CANVAS_HEIGHT: 0,
 
-	demensionate: function(number_repos) {
-		if(number_repos <= 30) {
-			Repo.columns = 11;
-			Repo.canvas_width = 660
-		}
-		else if(number_repos <= 50) {
-			Repo.columns = 13;
-			Repo.canvas_width = 780;
-		}
-		else {
-			Repo.columns = 15;
-			Repo.canvas_width = 900;
-		}
+	setGridDimensions: function(number_repos) {
+		if(number_repos < 9) { Grid.COLUMNS = number_repos; }
+		else if(number_repos <= 40) { Grid.COLUMNS = 9; }
+		else if(number_repos <= 50) { Grid.COLUMNS = 11; }
+		else if(number_repos <= 60) { Grid.COLUMNS = 13; }
+		else { Grid.COLUMNS = 15; }
+		Grid.CANVAS_WIDTH = Grid.GRID_BLOCK_SIZE * Grid.COLUMNS
 	},
 
 	calcCanvasHeight: function(repos) {
-		var adjustment = 1, columns = Repo.columns, number_repos = repos.length
-		if(number_repos % columns === 0) { adjustment = 0 }
-		Repo.canvas_height = parseInt((number_repos/ columns) + adjustment, 10) * Repo.grid_block_size;
+		var adjustment = 1, COLUMNS = Grid.COLUMNS, number_repos = repos.length
+		if(number_repos % COLUMNS === 0) { adjustment = 0 }
+		Grid.CANVAS_HEIGHT = parseInt((number_repos/ COLUMNS) + adjustment, 10) * Grid.GRID_BLOCK_SIZE;
 	},
 
 	// checks for no-repos, otherwise calls display functions 
 	// to put grid on page
-	initRepoLayout: function(repos) {
+	initGridLayout: function(repos) {
 
 		$(function() {
 			
-			if(Repo.anyRepos(repos)) {
-				Repo.calcCanvasHeight(repos);
-				Repo.repoGrid(repos);
-				Repo.activateButtons();
+			if(Grid.anyRepos(repos)) {
+				Grid.calcCanvasHeight(repos);
+				Grid.writeRepoGrid(repos);
+				Grid.activateButtons();
 				$(window).resize(function() {
-					Repo.horizontalResize();
+					Grid.horizontalResize();
 				});
 			}
 		});
@@ -51,6 +45,7 @@ var Repo = {
 		if(!repos) {
 			$('#repo-name-wrapper').remove();
 			$('#sort-button-wrapper').remove();
+			$('#split-button-wrapper').remove();
 			$('#repo-container-back')
 				.append('<h1> Oh Noes!</h1>')
 				.append('<h3 id="repoless-message"> You Don\'t Have any Repos! </h3>');
@@ -61,10 +56,10 @@ var Repo = {
 
 	// displays the repo grid on the page and sets event listeners for
 	// individual squares
-	repoGrid: function(repos) {
+	writeRepoGrid: function(repos) {
 
 		// creates svg canvas
-		svg = Repo.repoCanvas();
+		svg = Grid.renderGridCanvas();
 
 		// uses repos as data to create grid rectangles
 		rects = svg.selectAll('rect')
@@ -84,10 +79,10 @@ var Repo = {
 				return Color.stringColor(d['language'].toString());
 			})
 			.attr('x', function(d, i){
-				return (i % Repo.columns) * Repo.grid_block_size;
+				return (i % Grid.COLUMNS) * Grid.GRID_BLOCK_SIZE;
 			})
 			.attr('y', function(d, i){
-				return parseInt(i / Repo.columns, 10) * Repo.grid_block_size;
+				return parseInt(i / Grid.COLUMNS, 10) * Grid.GRID_BLOCK_SIZE;
 			})
 			.transition() // expands squares based randomly (within time limit)
 			.delay(function() {
@@ -96,8 +91,8 @@ var Repo = {
 			.duration(function() {
 				return 500 + (Math.random() * (Math.random() + 3)) * 300;
 			})
-			.attr('height', Repo.square_size)
-			.attr('width', Repo.square_size)
+			.attr('height', Grid.SQUARE_SIZE)
+			.attr('width', Grid.SQUARE_SIZE)
 			.each('end', function() {
 				d3.select(this)
 					.on('mouseenter', function() {
@@ -110,7 +105,7 @@ var Repo = {
 						.transition()
 						.duration(2000)
 						.attr('rx', 15);
-							Repo.displayRepoName($(this)[0]['__data__']['name'] + // displays repo name
+							Grid.displayRepoName($(this)[0]['__data__']['name'] + // displays repo name
 								" (" + $(this)[0]['__data__']['language'] + ')'); // displays repo language (main)
 					})
 
@@ -133,32 +128,36 @@ var Repo = {
 
 	// sets height of container based on num repos and creates svg canvas
 	// on top of back
-	repoCanvas: function() {
+	renderGridCanvas: function() {
 		
 		// sizes canvas
 		$('#repo-container-back')
-			.css('height', Repo.canvas_height + 105)
+			.css('height', Grid.CANVAS_HEIGHT + 105)
 			.css('padding-left', function() {
-				return $(window).width()/2 - Repo.canvas_width/2;
+				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 			})
 			.css('padding-right', function() {
-				return $(window).width()/2 - Repo.canvas_width/2;
+				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 			})
 			.animate({
 				'opacity': 1
 			}, 500);
 
+		// removes old repo-canvas to prevent multiple canvases
+		// if buttons are clicked in quick succession. 
+		$("#repo-container-canvas").remove();
+
 		// creates svg canvas
 		var canvas = d3.select('#repo-container-back')
 			.append('svg')
-			.attr('height', Repo.canvas_height)
-			.attr('width', Repo.canvas_width)
+			.attr('height', Grid.CANVAS_HEIGHT)
+			.attr('width', Grid.CANVAS_WIDTH)
 			.attr('id','repo-container-canvas');
 
 		return canvas;
 	},
 
-	// sets event listeners for sort buttons
+	// sets event listeners for sort and split buttons
 	activateButtons: function() {
 
 		$('.sort-button').click(function(e) {
@@ -167,9 +166,9 @@ var Repo = {
 			$(this).parent().removeClass('info').addClass('default selected-sort-button');
 			$('.selected-sort').removeClass('selected-sort');
 			$(this).addClass('selected-sort');
-			Repo.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
-
+			Grid.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 		});
+
 
 		$('.split-button').click(function(e) {
 			e.preventDefault();
@@ -177,7 +176,7 @@ var Repo = {
 			$(this).parent().removeClass('info').addClass('default selected-split-button');
 			$('.selected-split').removeClass('selected-split');
 			$(this).addClass('selected-split');
-			Repo.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
+			Grid.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 
 		});
 	},
@@ -189,17 +188,17 @@ var Repo = {
 				type: 'GET',
 				data: {'sort_type': sortType, 'split_type': splitType}
 			}).done(function(data) {
-				Repo.clearCanvas();
+				Grid.clearCanvas();
 				d3.select('#repo-container-canvas')
 					.transition()
 					.delay(500)
 					.duration(10)
 					.each('end', function() {
 						
-						Repo.demensionate(data.length);
-						Repo.horizontalResize();
-						Repo.calcCanvasHeight(data);
-						Repo.repoGrid(data);
+						Grid.setGridDimensions(data.length);
+						Grid.horizontalResize();
+						Grid.calcCanvasHeight(data);
+						Grid.repoGrid(data);
 					})
 					.remove();
 			});
@@ -230,10 +229,10 @@ var Repo = {
 
 		$('#repo-container-back')
 			.css('padding-left', function() {
-				return $(window).width()/2 - Repo.canvas_width/2;
+				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 			})
 			.css('padding-right', function() {
-				return $(window).width()/2 - Repo.canvas_width/2;
+				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 			});
 
 	}

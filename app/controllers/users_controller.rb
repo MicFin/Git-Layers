@@ -1,3 +1,5 @@
+
+
 class UsersController < ApplicationController
 	respond_to :json
 	# defines protocol for github api callback
