@@ -198,7 +198,7 @@ var Grid = {
 						Grid.setGridDimensions(data.length);
 						Grid.horizontalResize();
 						Grid.calcCanvasHeight(data);
-						Grid.repoGrid(data);
+						Grid.writeRepoGrid(data);
 					})
 					.remove();
 			});
