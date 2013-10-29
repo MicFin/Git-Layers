@@ -9,10 +9,11 @@ var Grid = {
 
 	setGridDimensions: function(number_repos) {
 		if(number_repos < 9) { Grid.COLUMNS = number_repos; }
-		else if(number_repos <= 40) { Grid.COLUMNS = 9; }
-		else if(number_repos <= 50) { Grid.COLUMNS = 11; }
-		else if(number_repos <= 60) { Grid.COLUMNS = 13; }
-		else { Grid.COLUMNS = 15; }
+		else if(number_repos <= 30) { Grid.COLUMNS = 9; }
+		else if(number_repos <= 40) { Grid.COLUMNS = 11; }
+		else if(number_repos <= 50) { Grid.COLUMNS = 13; }
+		else if(number_repos <= 60) { Grid.COLUMNS = 15;}
+		else { Grid.COLUMNS = 17; }
 		Grid.CANVAS_WIDTH = Grid.GRID_BLOCK_SIZE * Grid.COLUMNS
 	},
 

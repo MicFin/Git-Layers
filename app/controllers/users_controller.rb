@@ -97,9 +97,9 @@ class UsersController < ApplicationController
 					sort: sort_type}}))
 		end
 
-		@user_repos.reject! do |repo|
-			!repo['language']
-		end
+		# @user_repos.reject! do |repo|
+		# 	!repo['language']
+		# end
 
 		if sort_type == 'lang'
 			@user_repos = Repo.sort_repos_by_lang(@user_repos)
