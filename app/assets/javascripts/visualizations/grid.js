@@ -30,7 +30,9 @@ var Grid = {
 		$(function() {
 			
 			if(Grid.anyRepos(repos)) {
+				Grid.setGridDimensions(repos.length);
 				Grid.calcCanvasHeight(repos);
+				Grid.addRepoName();
 				Grid.writeRepoGrid(repos);
 				Grid.activateButtons();
 				$(window).resize(function() {
@@ -58,10 +60,8 @@ var Grid = {
 	// displays the repo grid on the page and sets event listeners for
 	// individual squares
 	writeRepoGrid: function(repos) {
-
 		// creates svg canvas
 		svg = Grid.renderGridCanvas();
-
 		// uses repos as data to create grid rectangles
 		rects = svg.selectAll('rect')
 			.data(repos)
@@ -132,19 +132,16 @@ var Grid = {
 	// sets height of container based on num repos and creates svg canvas
 	// on top of back
 	renderGridCanvas: function() {
-		
 		// sizes canvas
+		var padding = $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 		$('#repo-container-back')
-			.css('height', Grid.CANVAS_HEIGHT + 105)
-			.css('padding-left', function() {
-				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
-			})
-			.css('padding-right', function() {
-				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
-			})
 			.animate({
+				'height': Grid.CANVAS_HEIGHT + 105,
+				'padding-left':  padding,
+				'padding-right': padding,
+				'padding-top': '20px',
 				'opacity': 1
-			}, 500);
+			}, 1000);
 
 		// removes old repo-canvas to prevent multiple canvases
 		// if buttons are clicked in quick succession. 
@@ -169,7 +166,7 @@ var Grid = {
 			$(this).parent().removeClass('info').addClass('default selected-sort-button');
 			$('.selected-sort').removeClass('selected-sort');
 			$(this).addClass('selected-sort');
-			Grid.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
+			Grid.renderGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 		});
 
 
@@ -179,13 +176,13 @@ var Grid = {
 			$(this).parent().removeClass('info').addClass('default selected-split-button');
 			$('.selected-split').removeClass('selected-split');
 			$(this).addClass('selected-split');
-			Grid.resortGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
+			Grid.renderGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
 
 		});
 	},
 
 	// calls the backend to get repos sorted in specified way and displays them on grid
-	resortGrid: function(sortType, splitType) {
+	renderGrid: function(sortType, splitType) {
 			$.ajax({
 				url: '/users/repos',
 				type: 'GET',
@@ -196,8 +193,7 @@ var Grid = {
 					.transition()
 					.delay(500)
 					.duration(10)
-					.each('end', function() {
-						
+					.each('end', function() {	
 						Grid.setGridDimensions(data.length);
 						Grid.horizontalResize();
 						Grid.calcCanvasHeight(data);
@@ -228,11 +224,7 @@ var Grid = {
 		},1000, function() {
 			$(this).children().remove();
 		});
-		$('#sort-button-wrapper, #split-button-wrapper').animate({
-			'opacity': 0,
-		},1000, function() {
-			$(this).remove();
-		});
+		Page.removePageButtons();
 	},
 
 	// changes the #repo-name tag to the input name
@@ -250,6 +242,11 @@ var Grid = {
 			})
 			.css('padding-right', function() {
 				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
-			});
+		});
+	},
+
+	addRepoName: function() {
+		$('#repo-container-back')
+			.append("	<div id='repo-name-wrapper'><p id='repo-name'>Hover A Repo</p></div>");
 	}
 };

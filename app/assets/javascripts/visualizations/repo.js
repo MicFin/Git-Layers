@@ -6,7 +6,6 @@ var Repo = {
 			.html('<h2>' + repo["name"] + '</h2>');
 		
 		Repo.renderRepoContainer();
-		Repo.renderSquare();
 
 	},
 
@@ -16,7 +15,21 @@ var Repo = {
 			.animate({
 				'opacity': 1,
 				'height': 400
-			}, 1000);
+			}, 1000, function() {
+				Page.addBackButton();
+			});
+
 	},
+
+
+	resetPageElements: function() {
+		$('.profile-section-header')
+			.html("<h2> Repositories </h2>");
+		$("#repo-container-back")
+			.animate({
+				'height': 0,
+				'opacity': 0
+			}, 1000);
+	}
 
 }

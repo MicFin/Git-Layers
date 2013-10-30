@@ -1,3 +1,4 @@
+// Global namespace for color generator functions
 var Color = {
 
 	stringColor: function(string) {

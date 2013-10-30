@@ -5,7 +5,7 @@ body {
 #repo-container-back{
 	display: block;
 	margin: auto;
-	padding-top: 20px;
+	opacity: 0;
 }
 
 .profile-section-header {
@@ -107,4 +107,10 @@ body {
 
 #repo-name {
 	font-size: 22px;
+}
+
+#back-button-wrapper {
+	text-align: center;
+	margin: auto;
+	margin-top: 20px;
 }
