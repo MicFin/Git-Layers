@@ -1,36 +1,21 @@
 // Global namespace for Grid rendering functions
 var Grid = {
 	
+	// Default grid layout values
 	GRID_BLOCK_SIZE : 60,
 	SQUARE_SIZE: 50,
 	COLUMNS: 15,
 	CANVAS_WIDTH: 900,
 	CANVAS_HEIGHT: 0,
 
-	setGridDimensions: function(number_repos) {
-		if(number_repos < 9) { Grid.COLUMNS = number_repos; }
-		else if(number_repos <= 30) { Grid.COLUMNS = 9; }
-		else if(number_repos <= 40) { Grid.COLUMNS = 11; }
-		else if(number_repos <= 50) { Grid.COLUMNS = 13; }
-		else if(number_repos <= 60) { Grid.COLUMNS = 15;}
-		else { Grid.COLUMNS = 17; }
-		Grid.CANVAS_WIDTH = Grid.GRID_BLOCK_SIZE * Grid.COLUMNS
-	},
-
-	calcCanvasHeight: function(number_repos) {
-		var adjustment = 1, COLUMNS = Grid.COLUMNS;
-		if(number_repos % COLUMNS === 0) { adjustment = 0 }
-		Grid.CANVAS_HEIGHT = parseInt((number_repos/ COLUMNS) + adjustment, 10) * Grid.GRID_BLOCK_SIZE;
-	},
 
 	// checks for no-repos, otherwise calls display functions 
 	// to put grid on page
 	initGridLayout: function(repos) {
 
 		$(function() {
-			if(Grid.anyRepos(repos)) {
+			if(Grid.checkRepos(repos.length)) {
 				Grid.setGridDimensions(repos.length);
-				Grid.calcCanvasHeight(repos.length);
 				Grid.addRepoName();
 				Grid.writeRepoGrid(repos);
 				Grid.addGridButtons();
@@ -42,24 +27,56 @@ var Grid = {
 		
 	},
 
+	// sets the dimensions of the grid based on the number of repositories. 
+	setGridDimensions: function(number_repos) {
+
+		Grid.setGridColumns(number_repos);
+		Grid.calcCanvasHeight(number_repos);
+
+	},
+
+	// sets number of columsn based on the number of repositories
+	setGridColumns: function(number_repos) {
+
+		if(number_repos < 9) { Grid.COLUMNS = number_repos;}
+		else if(number_repos <= 30) { Grid.COLUMNS = 9; }
+		else if(number_repos <= 40) { Grid.COLUMNS = 11; }
+		else if(number_repos <= 50) { Grid.COLUMNS = 13; }
+		else if(number_repos <= 60) { Grid.COLUMNS = 15;}
+		else { Grid.COLUMNS = 17; }
+		Grid.CANVAS_WIDTH = Grid.GRID_BLOCK_SIZE * Grid.COLUMNS
+
+	},
+
+	// Calculates the necessary height of the canvas based on the number of repos
+	calcCanvasHeight: function(number_repos) {
+
+		var adjustment = 1, COLUMNS = Grid.COLUMNS;
+		if(number_repos % COLUMNS === 0) { adjustment = 0 }
+		Grid.CANVAS_HEIGHT = parseInt((number_repos/ COLUMNS) + adjustment, 10) * Grid.GRID_BLOCK_SIZE;
+
+	},
 
 	// displays alert on page if no repos are found for user
-	anyRepos: function(repos) {
-		if(!repos) {
+	checkRepos: function(num_repos) {
+
+		if(!num_repos) {
 			$('#repo-name-wrapper').remove();
 			$('#sort-button-wrapper').remove();
 			$('#split-button-wrapper').remove();
 			$('#repo-container-back')
 				.append('<h1> Oh Noes!</h1>')
-				.append('<h3 id="repoless-message"> You Don\'t Have any Repos! Get to it! </h3>');
+				.append('<h3 id="repoless-message">You Don\'t Have any Repos! Get to it!</h3>');
 				return false;
 		}
 		return true;
+
 	},
 
 	// displays the repo grid on the page and sets event listeners for
 	// individual squares
 	writeRepoGrid: function(repos) {
+
 		// creates svg canvas
 		svg = Grid.renderGridCanvas();
 		// uses repos as data to create grid rectangles
@@ -97,12 +114,14 @@ var Grid = {
 		.each('end', function() {
 			Grid.setGridEvents(this);
 		});
+
 	},
 
 
 	// sets height of container based on num repos and creates svg canvas
 	// on top of back
 	renderGridCanvas: function() {
+
 		// sizes canvas
 		var padding = $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 		$('#repo-container-back')

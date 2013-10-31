@@ -14,11 +14,21 @@ var Repo = {
 		$('#repo-container-back')
 			.animate({
 				'opacity': 1,
-				'height': 400
+				'height': Repo.containerHeight()	
 			}, 1000, function() {
 				Page.addBackButton();
 			});
 
+	},
+
+	repoContainerResize: function() {
+		$(window).resize(function() {
+			$('#repo-container-back')
+				.animate({
+					'opacity': 1,
+					'height': Repo.containerHeight()	
+				}, 50);
+		})
 	},
 
 	resetPageElements: function() {
@@ -29,6 +39,10 @@ var Repo = {
 				'height': 0,
 				'opacity': 0
 			}, 1000);
+	},
+
+	containerHeight: function() {
+		return $(window).height() - 300;
 	}
 
 }
