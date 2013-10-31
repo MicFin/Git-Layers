@@ -28,7 +28,6 @@ var Grid = {
 	initGridLayout: function(repos) {
 
 		$(function() {
-			
 			if(Grid.anyRepos(repos)) {
 				Grid.setGridDimensions(repos.length);
 				Grid.calcCanvasHeight(repos.length);
@@ -52,7 +51,7 @@ var Grid = {
 			$('#split-button-wrapper').remove();
 			$('#repo-container-back')
 				.append('<h1> Oh Noes!</h1>')
-				.append('<h3 id="repoless-message"> You Don\'t Have any Repos! </h3>');
+				.append('<h3 id="repoless-message"> You Don\'t Have any Repos! Get to it! </h3>');
 				return false;
 		}
 		return true;
@@ -65,68 +64,39 @@ var Grid = {
 		svg = Grid.renderGridCanvas();
 		// uses repos as data to create grid rectangles
 		rects = svg.selectAll('rect')
-			.data(repos)
-			.enter()
-			.append('rect')
-			.attr('rx', 5)
-			.attr('height', 0)
-			.attr('width', 0)
-			.attr('opacity', 1)
-			.attr('class', 'repo')
-			.style('stroke',  function(d, i){
-				return Color.stringColor(d['language'].toString());
-			})
-			.style('stroke-width', 1)
-			.style('fill', function(d, i) {
-				return Color.stringColor(d['language'].toString());
-			})
-			.attr('x', function(d, i){
-				return (i % Grid.COLUMNS) * Grid.GRID_BLOCK_SIZE;
-			})
-			.attr('y', function(d, i){
-				return parseInt(i / Grid.COLUMNS, 10) * Grid.GRID_BLOCK_SIZE;
-			})
-			.transition() // expands squares based randomly (within time limit)
-			.delay(function() {
-				return 500 + (Math.random() * (Math.random() + 2)) * 100;
-			})
-			.duration(function() {
-				return 500 + (Math.random() * (Math.random() + 3)) * 300;
-			})
-			.attr('height', Grid.SQUARE_SIZE)
-			.attr('width', Grid.SQUARE_SIZE)
-			.each('end', function() {
-				d3.select(this)
-					.on('mouseenter', function() {
-						d3.select(this)
-						.transition()
-						.duration(50)
-						.style('fill', function(d, i){
-							return Color.stringHover(d['language'].toString()); //changes square colors
-						})
-						.transition()
-						.duration(2000)
-						.attr('rx', 15);
-							Grid.displayRepoName($(this)[0]['__data__']['name'] + // displays repo name
-								" (" + $(this)[0]['__data__']['language'] + ')'); // displays repo language (main)
-					})
-
-					.on('mouseleave', function() {
-						d3.select(this)
-						.transition()
-						.duration(1000)
-						.style('fill', function(d, i){
-							return Color.stringColor(d['language'].toString()); // resets color
-						})
-						.attr('rx', 5);
-					})
-					.on('click', function(d, i) {
-						// window.open(this.__data__['html_url']); // opens github page on click
-						Grid.clearCanvas();
-						Grid.closeGrid();
-						Repo.renderRepo(d);
-					});
-			});
+		.data(repos)
+		.enter()
+		.append('rect')
+		.attr('rx', 5)
+		.attr('height', 0)
+		.attr('width', 0)
+		.attr('opacity', 1)
+		.attr('class', 'repo')
+		.style('stroke',  function(d, i){
+			return Color.stringColor(d['language'].toString());
+		})
+		.style('stroke-width', 1)
+		.style('fill', function(d, i) {
+			return Color.stringColor(d['language'].toString());
+		})
+		.attr('x', function(d, i){
+			return (i % Grid.COLUMNS) * Grid.GRID_BLOCK_SIZE;
+		})
+		.attr('y', function(d, i){
+			return parseInt(i / Grid.COLUMNS, 10) * Grid.GRID_BLOCK_SIZE;
+		})
+		.transition() // expands squares based randomly (within time limit)
+		.delay(function() {
+			return 500 + (Math.random() * (Math.random() + 2)) * 100;
+		})
+		.duration(function() {
+			return 500 + (Math.random() * (Math.random() + 3)) * 300;
+		})
+		.attr('height', Grid.SQUARE_SIZE)
+		.attr('width', Grid.SQUARE_SIZE)
+		.each('end', function() {
+			Grid.setGridEvents(this);
+		});
 	},
 
 
@@ -231,5 +201,57 @@ var Grid = {
 	addRepoName: function() {
 		$('#repo-container-back')
 			.append("	<div id='repo-name-wrapper'><p id='repo-name'>Hover A Repo</p></div>");
+	},
+
+	// adds grid events to d3 square
+	setGridEvents: function(repo) {
+		Grid.setGridMouseEnter(repo);
+		Grid.setGridMouseLeave(repo);
+		Grid.setGridClicks(repo);
+	},
+
+	// adds mouse enter event for grid square
+	setGridMouseEnter: function(repo) {
+		d3.select(repo)
+		.on('mouseenter', function() {
+			d3.select(repo)
+			.transition()
+			.duration(50)
+			.style('fill', function(d, i){
+				return Color.stringHover(d['language'].toString()); //changes square colors
+			})
+			.transition()
+			.duration(2000)
+			.attr('rx', 15);
+				Grid.displayRepoName($(repo)[0]['__data__']['name'] + // displays repo name
+					" (" + $(repo)[0]['__data__']['language'] + ')'); // displays repo language (main)
+		})
+	},
+
+	// adds mouse leave event for grid square
+	setGridMouseLeave: function(repo) {
+		d3.select(repo)
+		.on('mouseleave', function() {
+			d3.select(repo)
+			.transition()
+			.duration(1000)
+			.style('fill', function(d, i){
+				return Color.stringColor(d['language'].toString()); // resets color
+			})
+			.attr('rx', 5);
+		})
+	},
+
+	// adds click events for grid squares
+	setGridClicks: function(repo) {
+		d3.select(repo)
+		.on('click', function(d, i) {
+			// window.open(repo.__data__['html_url']); // opens github page on click
+			Grid.clearCanvas();
+			Grid.closeGrid();
+			Repo.renderRepo(d);
+		});
 	}
+
+
 };
