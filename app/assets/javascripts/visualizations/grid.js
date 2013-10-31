@@ -17,8 +17,8 @@ var Grid = {
 		Grid.CANVAS_WIDTH = Grid.GRID_BLOCK_SIZE * Grid.COLUMNS
 	},
 
-	calcCanvasHeight: function(repos) {
-		var adjustment = 1, COLUMNS = Grid.COLUMNS, number_repos = repos.length
+	calcCanvasHeight: function(number_repos) {
+		var adjustment = 1, COLUMNS = Grid.COLUMNS;
 		if(number_repos % COLUMNS === 0) { adjustment = 0 }
 		Grid.CANVAS_HEIGHT = parseInt((number_repos/ COLUMNS) + adjustment, 10) * Grid.GRID_BLOCK_SIZE;
 	},
@@ -31,10 +31,10 @@ var Grid = {
 			
 			if(Grid.anyRepos(repos)) {
 				Grid.setGridDimensions(repos.length);
-				Grid.calcCanvasHeight(repos);
+				Grid.calcCanvasHeight(repos.length);
 				Grid.addRepoName();
 				Grid.writeRepoGrid(repos);
-				Grid.activateButtons();
+				Grid.addGridButtons();
 				$(window).resize(function() {
 					Grid.horizontalResize();
 				});
@@ -42,7 +42,6 @@ var Grid = {
 		});
 		
 	},
-
 
 
 	// displays alert on page if no repos are found for user
@@ -159,28 +158,10 @@ var Grid = {
 		return canvas;
 	},
 
-	// sets event listeners for sort and split buttons
-	activateButtons: function() {
-
-		$('.sort-button').click(function(e) {
-			e.preventDefault();
-			$('.selected-sort-button').removeClass('default').addClass('info');
-			$(this).parent().removeClass('info').addClass('default selected-sort-button');
-			$('.selected-sort').removeClass('selected-sort');
-			$(this).addClass('selected-sort');
-			Grid.renderGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
-		});
-
-
-		$('.split-button').click(function(e) {
-			e.preventDefault();
-			$('.selected-split-button').removeClass('default').addClass('info');
-			$(this).parent().removeClass('info').addClass('default selected-split-button');
-			$('.selected-split').removeClass('selected-split');
-			$(this).addClass('selected-split');
-			Grid.renderGrid($('.selected-sort').attr('href').toString(), $('.selected-split').attr('href').toString());
-
-		});
+	// Adds buttons for grid view
+	addGridButtons: function() {
+		Page.addSortButtons();
+		Page.addSplitButtons();
 	},
 
 	// calls the backend to get repos sorted in specified way and displays them on grid
@@ -198,7 +179,7 @@ var Grid = {
 					.each('end', function() {	
 						Grid.setGridDimensions(data.length);
 						Grid.horizontalResize();
-						Grid.calcCanvasHeight(data);
+						Grid.calcCanvasHeight(data.length);
 						Grid.writeRepoGrid(data);
 					})
 					.remove();

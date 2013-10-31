@@ -21,7 +21,6 @@ var Repo = {
 
 	},
 
-
 	resetPageElements: function() {
 		$('.profile-section-header')
 			.html("<h2> Repositories </h2>");
