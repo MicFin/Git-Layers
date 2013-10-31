@@ -264,12 +264,11 @@ var Grid = {
 	setGridClicks: function(repo) {
 		d3.select(repo)
 		.on('click', function(d, i) {
-			// window.open(repo.__data__['html_url']); // opens github page on click
-			Grid.clearCanvas();
-			Grid.closeGrid();
-			Repo.renderRepo(d);
+			window.open(repo.__data__['html_url']); // opens github page on click
+			// Grid.clearCanvas();
+			// Grid.closeGrid();
+			// Repo.renderRepo(d);
 		});
 	}
-
 
 };
