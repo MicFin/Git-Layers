@@ -57,6 +57,19 @@ var Grid = {
 
 	},
 
+		// recalculates the padding on either side of the canvas to center it
+	horizontalResize: function() {
+
+		$('#repo-container-back')
+			.css('padding-left', function() {
+				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
+			})
+			.css('padding-right', function() {
+				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
+		});
+
+	},
+
 	// displays alert on page if no repos are found for user
 	checkRepos: function(num_repos) {
 
@@ -71,6 +84,12 @@ var Grid = {
 		}
 		return true;
 
+	},
+
+	// Adds buttons for grid view
+	addGridButtons: function() {
+		Page.addSortButtons();
+		Page.addSplitButtons();
 	},
 
 	// displays the repo grid on the page and sets event listeners for
@@ -117,13 +136,12 @@ var Grid = {
 
 	},
 
-
 	// sets height of container based on num repos and creates svg canvas
 	// on top of back
 	renderGridCanvas: function() {
-
+		var canvas, padding;
 		// sizes canvas
-		var padding = $(window).width()/2 - Grid.CANVAS_WIDTH/2;
+		padding = $(window).width()/2 - Grid.CANVAS_WIDTH/2;
 		$('#repo-container-back')
 			.animate({
 				'height': Grid.CANVAS_HEIGHT + 105,
@@ -133,12 +151,12 @@ var Grid = {
 				'opacity': 1
 			}, 1000);
 
-		// removes old repo-canvas to prevent multiple canvases
-		// if buttons are clicked in quick succession. 
+		// removes old repo-canvas to prevent multiple 
+		// canvases if buttons clicked in quick succession.
 		$("#repo-container-canvas").remove();
 
 		// creates svg canvas
-		var canvas = d3.select('#repo-container-back')
+		canvas = d3.select('#repo-container-back')
 			.append('svg')
 			.attr('height', Grid.CANVAS_HEIGHT)
 			.attr('width', Grid.CANVAS_WIDTH)
@@ -147,13 +165,7 @@ var Grid = {
 		return canvas;
 	},
 
-	// Adds buttons for grid view
-	addGridButtons: function() {
-		Page.addSortButtons();
-		Page.addSplitButtons();
-	},
-
-	// calls the backend to get repos sorted in specified way and displays them on grid
+	// calls controller to get repos sorted in specified way and renders them
 	renderGrid: function(sortType, splitType) {
 			$.ajax({
 				url: '/users/repos',
@@ -166,10 +178,7 @@ var Grid = {
 					.delay(500)
 					.duration(10)
 					.each('end', function() {	
-						Grid.setGridDimensions(data.length);
-						Grid.horizontalResize();
-						Grid.calcCanvasHeight(data.length);
-						Grid.writeRepoGrid(data);
+						Grid.initGridLayout(data);
 					})
 					.remove();
 			});
@@ -204,22 +213,12 @@ var Grid = {
 		$('#repo-name').html(name);
 	},
 
-
-	// recalculates the padding on either side of the canvas to center it
-	horizontalResize: function() {
-
-		$('#repo-container-back')
-			.css('padding-left', function() {
-				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
-			})
-			.css('padding-right', function() {
-				return $(window).width()/2 - Grid.CANVAS_WIDTH/2;
-		});
-	},
-
 	addRepoName: function() {
-		$('#repo-container-back')
-			.append("	<div id='repo-name-wrapper'><p id='repo-name'>Hover A Repo</p></div>");
+		var wrapper = $("#repo-name-wrapper")[0]
+		if(!wrapper) {
+			$('#repo-container-back')
+				.append("	<div id='repo-name-wrapper'><p id='repo-name'>Hover A Repo</p></div>");
+		}
 	},
 
 	// adds grid events to d3 square
@@ -243,7 +242,7 @@ var Grid = {
 			.duration(2000)
 			.attr('rx', 15);
 				Grid.displayRepoName($(repo)[0]['__data__']['name'] + // displays repo name
-					" (" + $(repo)[0]['__data__']['language'] + ')'); // displays repo language (main)
+					"(" + $(repo)[0]['__data__']['language'] + ')'); // displays repo language (main)
 		})
 	},
 

@@ -22,6 +22,7 @@ var Repo = {
 	},
 
 	repoContainerResize: function() {
+
 		$(window).resize(function() {
 			$('#repo-container-back')
 				.animate({
@@ -29,16 +30,6 @@ var Repo = {
 					'height': Repo.containerHeight()	
 				}, 50);
 		})
-	},
-
-	resetPageElements: function() {
-		$('.profile-section-header')
-			.html("<h2> Repositories </h2>");
-		$("#repo-container-back")
-			.animate({
-				'height': 0,
-				'opacity': 0
-			}, 1000);
 	},
 
 	containerHeight: function() {
