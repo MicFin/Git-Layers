@@ -54,7 +54,7 @@ var Repo = {
 		var dateDomain = Repo.commitDomain(commits),
 		commitsByDate = Repo.sortCommits(commits),
 		max = Repo.commitMax(commitsByDate),
-		w = 1000,
+		w = $(window).width(),
 		h = 300,
 		x  = d3.scale.linear().domain(dateDomain).range([100, w-100]);
 		y = d3.scale.linear().domain([0, max]).range([0, h - 50]);
@@ -77,7 +77,12 @@ var Repo = {
 				})
 				.y(function(d,i) {
 					return h - y(d[Object.keys(d)[0]].length);
-				}));
+				})
+			)
+			.attr('stroke-width', 3)
+			.attr('stroke', function() {
+				return Color.stringColor(Repo.currentRepo['language']);
+			})
 	},
 
 	commitDomain: function(commits) {
@@ -104,7 +109,6 @@ var Repo = {
 		for(;i < length;) {
 			for(key in sortedCommitsArray[i]) {
 				commitsForDate = sortedCommitsArray[i][key].length;
-				console.log(commitsForDate);
 				if(commitsForDate > max) {
 					max = commitsForDate
 				}
