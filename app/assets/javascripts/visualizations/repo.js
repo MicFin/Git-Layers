@@ -1,11 +1,13 @@
 // Global namespace for single repo rendering functions
 var Repo = {
 
+
 	renderRepo: function(repo) {
 		$('.profile-section-header')
 			.html('<h2>' + repo["name"] + '</h2>');
-		
 		Repo.renderRepoContainer();
+		Repo.currentRepo = repo;
+		Repo.commits();
 
 	},
 
@@ -33,7 +35,19 @@ var Repo = {
 	},
 
 	containerHeight: function() {
-		return $(window).height() - 300;
+		return 400;
+	},
+
+	commits: function() {
+		$.ajax({
+			url: '/repos/commits',
+			type: 'GET',
+			data: {'commits-url': Repo.currentRepo["commits_url"].split("{")[0]}
+		}).done(function(commits) {
+			console.log(commits);
+		});
 	}
+
+
 
 }
