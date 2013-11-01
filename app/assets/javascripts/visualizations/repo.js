@@ -39,12 +39,17 @@ var Repo = {
 	},
 
 	commits: function() {
+		var i = 0, max;
 		$.ajax({
-			url: '/repos/commits',
+			url: '/users/repos/commits',
 			type: 'GET',
-			data: {'commits-url': Repo.currentRepo["commits_url"].split("{")[0]}
+			data: {'commits_url': Repo.currentRepo["commits_url"].split("{")[0]}
 		}).done(function(commits) {
-			console.log(commits);
+			max = commits.length;
+			for(; i < max;) {
+				console.log(commits[i])
+				i += 1;
+			}
 		});
 	}
 
