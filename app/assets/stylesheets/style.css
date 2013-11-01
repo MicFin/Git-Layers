@@ -119,3 +119,8 @@ body {
 	margin-left: 2px;
 	margin-right: 2px;
 }
+
+path {
+	fill: none;
+	stroke: black;
+}
