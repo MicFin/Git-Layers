@@ -145,12 +145,16 @@ var Page = {
 
 		$('.profile-section-header')
 			.html("<h2>" + header + " </h2>");
-		$("#repo-container-back")
-			.animate({
-				'height': 0,
-				'opacity': 0
-			}, 1000);
-
+			
+		Page.resetBackContainer();
 	},
+
+	resetBackContainer: function() {
+		$("#repo-container-back")
+		.animate({
+			'height': 0,
+			'opacity': 0
+		}, 1000);
+	}
 
 }
