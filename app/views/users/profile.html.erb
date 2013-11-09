@@ -1,14 +1,7 @@
 <div class='profile-section-header'><h2>Repositories</h2></div>
-
+<div id='repo-container-back' class='content-container'></div>
 <script>
 	Grid.initGridLayout(<%=@user_repos%>)
 </script> 
 
-<div id='repo-container-back' class='content-container'>
-	<div id='repo-name-wrapper'>
-		<p id='repo-name'>Hover A Repo</p>
-	</div>
-</div>
 
-<%= render 'users/sort_buttons'%>
-<%= render 'users/split_buttons'%>

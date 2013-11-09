@@ -7,5 +7,6 @@ GitLayers::Application.routes.draw do
   get 'users/callback', to: 'users#callback'
   get 'profile', to: 'users#profile', as: 'user_profile'
   get 'users/repos', to: 'users#repos', as: 'user_repos'
+  get '/users/repos/commits', to: 'users#repo_commits', as: 'repo_commits'
 
 end

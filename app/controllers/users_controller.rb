@@ -114,4 +114,14 @@ class UsersController < ApplicationController
 		respond_with @user_repos.to_json.html_safe
 	end
 
+	def repo_commits 
+		@commits = Rails.cache.fetch("#{params['commits_url']}", expires_in: 9000.seconds) do
+			JSON.parse(RestClient.get(params['commits_url'], {params:
+				{ access_token: session[:user_access_token],
+					per_page: 100}}))
+		end
+
+		respond_with @commits.to_json.html_safe
+	end
+
 end
