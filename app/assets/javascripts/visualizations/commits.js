@@ -38,7 +38,6 @@ var Commits = {
 			.attr('height', Commits.graphHeight)
 			.attr('width', Commits.graphWidth);
 
-	
 		Commits.graphByDays()
 	},
 
@@ -46,22 +45,14 @@ var Commits = {
 
 	},
 
+
+	// graphs commits as a function of days
 	graphByDays: function()  {
 
-		var barHeight = d3.scale.linear()
-			.domain([0, Commits.max])
-			.range([Commits.paddingBottom, Commits.graphHeight - Commits.paddingTop]);
 
-		var barIndex = d3.time.scale()
-			.domain(Commits.commitDomainDates)
-			.range([0, Commits.dayDifference - 1]);
-
-		var barPosition = d3.scale.linear()
-			.domain([0, Commits.dayDifference])
-			.range([Commits.paddingLeft, Commits.graphWidth - Commits.paddingRight]);
-
-		barWidth = (Commits.graphWidth - Commits.paddingRight - Commits.paddingLeft)/Commits.dayDifference;
-		barPadding = (0.1) * barWidth;
+		// sets up dimensions of the graph
+		var barWidth = (Commits.graphWidth - Commits.paddingRight - Commits.paddingLeft)/Commits.dayDifference,
+		barPadding = (0.1) * barWidth,
 		barWidth = (0.9) * barWidth;
 
 		if(Commits.sortedCommits.length === 1) {
@@ -69,10 +60,27 @@ var Commits = {
 			barPadding = 0;
 		}
 
-		
+		// sets up a scaling function that takes in a number of commits and 
+		// returns a height value with in the range of the graph height
+		var barHeight = d3.scale.linear()
+			.domain([0, Commits.max])
+			.range([Commits.paddingBottom, Commits.graphHeight - Commits.paddingTop]);
 
 
-		var currentBarHeight = 0;
+		// sets up indexing scale for dates. Takes in a date within the given
+		// domain and returns the index of the day from the day of the first
+		// commit
+		var barIndex = d3.time.scale()
+			.domain(Commits.commitDomainDates)
+			.range([0, Commits.dayDifference - 1]);
+
+
+		// sets up scaling function to calculate teh x position of a bar based
+		// on the number of days between the first and last commit and the index
+		// of the bar calculated with the function above
+		var barPosition = d3.scale.linear()
+			.domain([0, Commits.dayDifference])
+			.range([Commits.paddingLeft, Commits.graphWidth - Commits.paddingRight]);
 
 		Commits.graphCanvas.selectAll('rect')
 			.data(Commits.sortedCommits)
@@ -97,26 +105,7 @@ var Commits = {
 				return Color.stringColor(Repo.language);
 			})
 			.attr('rx', 2)
-			.on('mouseenter', function(d,i) {
-				d3.select(this)
-					.transition()
-					.duration(50)
-					.style('fill', function() {
-						return Color.stringHover(Repo.language);
-					});
-
-				for(key in d) {
-					Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
-				}
-			})
-			.on('mouseleave', function() {
-				d3.select(this)
-					.transition()
-					.duration(1000)
-					.style('fill', function() {
-						return Color.stringColor(Repo.language);
-					});
-			})
+			.attr('width', barWidth)
 			.transition()
 			.delay(function(d,i) {
 				return (Math.random() * (Math.random() + 2)) * 100;
@@ -136,7 +125,29 @@ var Commits = {
 					}
 				return Commits.graphHeight - barHeight(length) + 2;
 			})
-			.attr('width', barWidth);
+			.each('end', function() {
+				d3.select(this)
+					.on('mouseenter', function(d,i) {
+						d3.select(this)
+							.transition()
+							.duration(50)
+							.style('fill', function() {
+								return Color.stringHover(Repo.language);
+							});
+
+						for(key in d) {
+							Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
+						}
+					})
+					.on('mouseleave', function() {
+						d3.select(this)
+							.transition()
+							.duration(1000)
+							.style('fill', function() {
+								return Color.stringColor(Repo.language);
+							});
+					});
+				});
 			
 
 	},
