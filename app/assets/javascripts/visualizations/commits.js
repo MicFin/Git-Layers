@@ -28,7 +28,7 @@ var Commits = {
 		Commits.max = Commits.commitMax(Commits.sortedCommits);
 		Commits.commitDomainDates = Commits.commitDomain(commits);
 		Commits.graphWidth = $(window).width();
-		Commits.graphHeight = $('#repo-container-back').height();
+		Commits.graphHeight = $('#repo-container-back').height() - 105/2;
 		Commits.dayDifference = Commits.numberOfDays(Commits.commitDomainDates);
 
 		
@@ -89,13 +89,17 @@ var Commits = {
 				return Color.stringColor(Repo.language);
 			})
 			.attr('rx', 2)
-			.on('mouseenter', function() {
+			.on('mouseenter', function(d,i) {
 				d3.select(this)
 					.transition()
 					.duration(50)
 					.style('fill', function() {
 						return Color.stringHover(Repo.language);
 					});
+
+				for(key in d) {
+					Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
+				}
 			})
 			.on('mouseleave', function() {
 				d3.select(this)
