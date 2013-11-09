@@ -1,5 +1,7 @@
+// Namespace for commit grapher 
 var Commits = {
 
+	// constant graph padding values
 	paddingLeft: 60,
 	paddingRight: 60,
 	paddingTop: 20,
@@ -19,6 +21,7 @@ var Commits = {
 		});
 	},
 
+
 	// graphs commits based on the time that the repo
 	// has been active (days, months, years)
 	graphCommits: function(commits) {
@@ -35,33 +38,17 @@ var Commits = {
 
 		// creates svg canvas for d3 graph
 		Commits.renderGraphCanvas();
-
-		// graphs by days (by default)
 		Commits.graphByDays()
 	},
 
-	// graphs repos with days being the x-axis and 
+
+	// graphs commits as a function of days
 	graphByDays: function()  {
 
-		// creates scale function to determine height of bar
-		// when given number of commits
-		var barHeight = d3.scale.linear()
-			.domain([0, Commits.max])
-			.range([Commits.paddingBottom, Commits.graphHeight - Commits.paddingTop]);
 
-		// creates scale funcion to determine the 'index' of the day
-		// based on the number of days between the first commit and 
-		// the most recent commit
-		var barIndex = d3.time.scale()
-			.domain(Commits.commitDomainDates)
-			.range([0, Commits.dayDifference - 1]);
-
-		var barPosition = d3.scale.linear()
-			.domain([0, Commits.dayDifference])
-			.range([Commits.paddingLeft, Commits.graphWidth - Commits.paddingRight]);
-
-		barWidth = (Commits.graphWidth - Commits.paddingRight - Commits.paddingLeft)/Commits.dayDifference;
-		barPadding = (0.1) * barWidth;
+		// sets up dimensions of the graph
+		var barWidth = (Commits.graphWidth - Commits.paddingRight - Commits.paddingLeft)/Commits.dayDifference,
+		barPadding = (0.1) * barWidth,
 		barWidth = (0.9) * barWidth;
 
 		if(Commits.sortedCommits.length === 1) {
@@ -69,49 +56,52 @@ var Commits = {
 			barPadding = 0;
 		}
 
+		// sets up a scaling function that takes in a number of commits and 
+		// returns a height value with in the range of the graph height
+		var barHeight = d3.scale.linear()
+			.domain([0, Commits.max])
+			.range([Commits.paddingBottom, Commits.graphHeight - Commits.paddingTop]);
+
+
+		// sets up indexing scale for dates. Takes in a date within the given
+		// domain and returns the index of the day from the day of the first
+		// commit
+		var barIndex = d3.time.scale()
+			.domain(Commits.commitDomainDates)
+			.range([0, Commits.dayDifference - 1]);
+
+
+		// sets up scaling function to calculate teh x position of a bar based
+		// on the number of days between the first and last commit and the index
+		// of the bar calculated with the function above
+		var barPosition = d3.scale.linear()
+			.domain([0, Commits.dayDifference])
+			.range([Commits.paddingLeft, Commits.graphWidth - Commits.paddingRight]);
+
+
+		// Graphs it
 		Commits.graphCanvas.selectAll('rect')
 			.data(Commits.sortedCommits)
 			.enter()
 			.append('rect')
 			.attr('x', function(d,i){
-				var index;
-				for(key in d) {
-					index = barIndex(Commits.formatDate(d[key][0].commit.committer.date));
-				}
+
+				// gets index from date-commitArray pair
+				var index = barIndex(Commits.dateFromPair(d));
+				
+				// unpadded if it is first commit
 				if(i === Commits.sortedCommits.length - 1) {
 					return barPosition(index);
 				}
 				return barPosition(index) + barPadding;
 			})
-			.attr('height', 0)
 			.attr('y', Commits.graphHeight)
-			.attr('fill', function() {
-				return Color.stringColor(Repo.language);
-			})
-			.attr('stroke', function() {
-				return Color.stringColor(Repo.language);
-			})
+			.attr('height', 0)
+			.attr('width', barWidth)
+			.attr('fill', function() {return Color.stringColor(Repo.language);})
+			.attr('stroke', function() {return Color.stringColor(Repo.language);})
 			.attr('rx', 2)
-			.on('mouseenter', function(d,i) {
-				d3.select(this)
-					.transition()
-					.duration(50)
-					.style('fill', function() {
-						return Color.stringHover(Repo.language);
-					});
-
-				for(key in d) {
-					Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
-				}
-			})
-			.on('mouseleave', function() {
-				d3.select(this)
-					.transition()
-					.duration(1000)
-					.style('fill', function() {
-						return Color.stringColor(Repo.language);
-					});
-			})
+			// starts transition in
 			.transition()
 			.delay(function(d,i) {
 				return (Math.random() * (Math.random() + 2)) * 100;
@@ -131,11 +121,16 @@ var Commits = {
 					}
 				return Commits.graphHeight - barHeight(length) + 2;
 			})
-			.attr('width', barWidth);
-			
-
+			.each('end', function() {
+				// sets event listeners on commit bar
+				Commits.setBarMouseEnter(this);
+				Commits.setBarMouseLeave(this);
+			});
 	},
 
+
+	// finds the dates of the first and last (most recent) commits
+	// on the repo and returns them as array of two JS Date objects
 	commitDomain: function(commits) {
 		var i = 0, length = commits.length,
 		first = commits[0].commit.committer.date,
@@ -153,6 +148,8 @@ var Commits = {
 		return [Commits.formatDate(first), Commits.formatDate(last)];
 	},
 
+
+	// formats the dates (from strings) as JS Date objects for d3 date scale
 	formatDate: function(dateString) {
 		var dateArray = dateString.split('T'),
 			date = dateArray[0].split('-');
@@ -160,6 +157,8 @@ var Commits = {
 		return new Date(date[0], date[1] - 1, date[2]);
 	},
 
+
+	// finds largest amount of commits in a day
 	commitMax: function(sortedCommitsArray) {
 		var i = 0, length = sortedCommitsArray.length,
 			max = 0, commitsForDate = 0;
@@ -175,6 +174,10 @@ var Commits = {
 		return max;
 	},
 
+
+	// sorts commits into arrays by date, and sets each array 
+	// as the value of a key (the date). Creates array of 
+	// date-> commitArray pairs (objects)
 	sortCommitsByDate: function(commits) {
 		var byDateObj = {}, i = 0, length = commits.length,
 			max = 0, date, byDateArray = [];
@@ -191,7 +194,6 @@ var Commits = {
 			dateObject[key] = byDateObj[key];
 			byDateArray.push(dateObject);
 		}
-		console.log(byDateArray)
 		return byDateArray;
 	},
 
@@ -205,8 +207,50 @@ var Commits = {
 
 	},
 
+	// sets event listeners for mouseenter each bar (using d3)
+	setBarMouseEnter: function(bar) {
+		d3.select(bar)
+			.on('mouseenter', function(d,i) {
+				d3.select(this)
+					.transition()
+					.duration(50)
+					.style('fill', function() {
+						return Color.stringHover(Repo.language);
+					});
+
+			for(key in d) {
+				Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
+			}
+		});
+	},
+
+
+	// sets event leisteners for mouseleave for each bar (using d3)
+	setBarMouseLeave: function(bar) {
+		d3.select(bar)
+		.on('mouseleave', function() {
+			d3.select(this)
+					.transition()
+					.duration(1000)
+					.style('fill', function() {
+						return Color.stringColor(Repo.language);
+					});
+			});
+	},
+
+
+	// calculates the date difference between two JS Dates
 	numberOfDays: function(minMaxArray) {
 		var milliseconds = minMaxArray[1] - minMaxArray[0];
 		return parseInt(milliseconds* 1.15741E-8, 10) + 1;
+	},
+
+
+	// takes a date-> commitArray pair and returns date
+	dateFromPair: function(datePair) {
+		for(key in datePair) {
+			return Commits.formatDate(datePair[key][0].commit.committer.date);
+		}
 	}
+
 }

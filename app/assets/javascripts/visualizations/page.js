@@ -142,11 +142,9 @@ var Page = {
 	},
 
 	addContentHeader: function(header) {
-		var wrapper = $("#content-wrapper")[0]
-		if(!wrapper) {
-			$('#repo-container-back')
-				.append("	<div id='content-wrapper'><p id='content-header'>" + header + "</p></div>");
-		}
+		$("#content-wrapper").remove()
+		$('#repo-container-back')
+			.append("	<div id='content-wrapper'><p id='content-header'>" + header + "</p></div>");
 	},
 
 	// changes the #repo-name tag to the input name
