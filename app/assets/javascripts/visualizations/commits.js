@@ -1,5 +1,7 @@
+// Namespace for commit grapher 
 var Commits = {
 
+	// constant graph padding values
 	paddingLeft: 60,
 	paddingRight: 60,
 	paddingTop: 20,
@@ -17,6 +19,7 @@ var Commits = {
 			Commits.graphCommits(commits);
 		});
 	},
+
 
 	// graphs commits based on the time that the repo
 	// has been active (by days or by months)
@@ -39,10 +42,6 @@ var Commits = {
 			.attr('width', Commits.graphWidth);
 
 		Commits.graphByDays()
-	},
-
-	graphByMonths: function() {
-
 	},
 
 
@@ -82,6 +81,8 @@ var Commits = {
 			.domain([0, Commits.dayDifference])
 			.range([Commits.paddingLeft, Commits.graphWidth - Commits.paddingRight]);
 
+
+		// Graphs it
 		Commits.graphCanvas.selectAll('rect')
 			.data(Commits.sortedCommits)
 			.enter()
@@ -124,11 +125,15 @@ var Commits = {
 				return Commits.graphHeight - barHeight(length) + 2;
 			})
 			.each('end', function() {
+				// sets event listeners on commit bar
 				Commits.setBarMouseEnter(this);
 				Commits.setBarMouseLeave(this);
 			});
 	},
 
+
+	// finds the dates of the first and last (most recent) commits
+	// on the repo and returns them as array of two JS Date objects
 	commitDomain: function(commits) {
 		var i = 0, length = commits.length,
 		first = commits[0].commit.committer.date,
@@ -146,6 +151,8 @@ var Commits = {
 		return [Commits.formatDate(first), Commits.formatDate(last)];
 	},
 
+
+	// formats the dates (from strings) as JS Date objects for d3 date scale
 	formatDate: function(dateString) {
 		var dateArray = dateString.split('T'),
 			date = dateArray[0].split('-');
@@ -153,6 +160,8 @@ var Commits = {
 		return new Date(date[0], date[1], date[2]);
 	},
 
+
+	// finds largest amount of commits in a day
 	commitMax: function(sortedCommitsArray) {
 		var i = 0, length = sortedCommitsArray.length,
 			max = 0, commitsForDate = 0;
@@ -168,6 +177,10 @@ var Commits = {
 		return max;
 	},
 
+
+	// sorts commits into arrays by date, and sets each array 
+	// as the value of a key (the date). Creates array of 
+	// date-> commitArray pairs (objects)
 	sortCommitsByDate: function(commits) {
 		var byDateObj = {}, i = 0, length = commits.length,
 			max = 0, date, byDateArray = [];
@@ -187,6 +200,8 @@ var Commits = {
 		return byDateArray;
 	},
 
+
+	// sets event listeners for mouseenter each bar (using d3)
 	setBarMouseEnter: function(bar) {
 		d3.select(bar)
 			.on('mouseenter', function(d,i) {
@@ -203,6 +218,8 @@ var Commits = {
 		});
 	},
 
+
+	// sets event leisteners for mouseleave for each bar (using d3)
 	setBarMouseLeave: function(bar) {
 		d3.select(bar)
 		.on('mouseleave', function() {
@@ -215,11 +232,15 @@ var Commits = {
 			});
 	},
 
+
+	// calculates the date difference between two JS Dates
 	numberOfDays: function(minMaxArray) {
 		var milliseconds = minMaxArray[1] - minMaxArray[0];
 		return parseInt(milliseconds* 1.15741E-8, 10) + 1;
 	},
 
+
+	// takes a date-> commitArray pair and returns date
 	dateFromPair: function(datePair) {
 		for(key in datePair) {
 			return Commits.formatDate(datePair[key][0].commit.committer.date);
