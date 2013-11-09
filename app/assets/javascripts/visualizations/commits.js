@@ -87,25 +87,23 @@ var Commits = {
 			.enter()
 			.append('rect')
 			.attr('x', function(d,i){
-				var index;
-				for(key in d) {
-					index = barIndex(Commits.formatDate(d[key][0].commit.committer.date));
-				}
+
+				// gets index from date-commitArray pair
+				var index = barIndex(Commits.dateFromPair(d));
+				
+				// unpadded if it is first commit
 				if(i === Commits.sortedCommits.length - 1) {
 					return barPosition(index);
 				}
 				return barPosition(index) + barPadding;
 			})
-			.attr('height', 0)
 			.attr('y', Commits.graphHeight)
-			.attr('fill', function() {
-				return Color.stringColor(Repo.language);
-			})
-			.attr('stroke', function() {
-				return Color.stringColor(Repo.language);
-			})
-			.attr('rx', 2)
+			.attr('height', 0)
 			.attr('width', barWidth)
+			.attr('fill', function() {return Color.stringColor(Repo.language);})
+			.attr('stroke', function() {return Color.stringColor(Repo.language);})
+			.attr('rx', 2)
+			// starts transition in
 			.transition()
 			.delay(function(d,i) {
 				return (Math.random() * (Math.random() + 2)) * 100;
@@ -126,30 +124,9 @@ var Commits = {
 				return Commits.graphHeight - barHeight(length) + 2;
 			})
 			.each('end', function() {
-				d3.select(this)
-					.on('mouseenter', function(d,i) {
-						d3.select(this)
-							.transition()
-							.duration(50)
-							.style('fill', function() {
-								return Color.stringHover(Repo.language);
-							});
-
-						for(key in d) {
-							Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
-						}
-					})
-					.on('mouseleave', function() {
-						d3.select(this)
-							.transition()
-							.duration(1000)
-							.style('fill', function() {
-								return Color.stringColor(Repo.language);
-							});
-					});
-				});
-			
-
+				Commits.setBarMouseEnter(this);
+				Commits.setBarMouseLeave(this);
+			});
 	},
 
 	commitDomain: function(commits) {
@@ -207,12 +184,46 @@ var Commits = {
 			dateObject[key] = byDateObj[key];
 			byDateArray.push(dateObject);
 		}
-		console.log(byDateArray)
 		return byDateArray;
+	},
+
+	setBarMouseEnter: function(bar) {
+		d3.select(bar)
+			.on('mouseenter', function(d,i) {
+				d3.select(this)
+					.transition()
+					.duration(50)
+					.style('fill', function() {
+						return Color.stringHover(Repo.language);
+					});
+
+			for(key in d) {
+				Page.setContentHeader(Commits.formatDate(d[key][0].commit.committer.date).toDateString() + " | " + d[key].length + " Commits ");
+			}
+		});
+	},
+
+	setBarMouseLeave: function(bar) {
+		d3.select(bar)
+		.on('mouseleave', function() {
+			d3.select(this)
+					.transition()
+					.duration(1000)
+					.style('fill', function() {
+						return Color.stringColor(Repo.language);
+					});
+			});
 	},
 
 	numberOfDays: function(minMaxArray) {
 		var milliseconds = minMaxArray[1] - minMaxArray[0];
 		return parseInt(milliseconds* 1.15741E-8, 10) + 1;
+	},
+
+	dateFromPair: function(datePair) {
+		for(key in datePair) {
+			return Commits.formatDate(datePair[key][0].commit.committer.date);
+		}
 	}
+
 }
