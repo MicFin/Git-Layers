@@ -16,7 +16,7 @@ var Grid = {
 		$(function() {
 			if(Grid.checkRepos(repos.length)) {
 				Grid.setGridDimensions(repos.length);
-				Grid.addRepoName();
+				Page.addContentHeader('Hover a Repo')
 				Grid.writeRepoGrid(repos);
 				Grid.addGridButtons();
 				$(window).resize(function() {
@@ -136,20 +136,9 @@ var Grid = {
 
 	},
 
-	// sets height of container based on num repos and creates svg canvas
-	// on top of back
 	renderGridCanvas: function() {
-		var canvas, padding;
-		// sizes canvas
-		padding = $(window).width()/2 - Grid.CANVAS_WIDTH/2;
-		$('#repo-container-back')
-			.animate({
-				'height': Grid.CANVAS_HEIGHT + 105,
-				'padding-left':  padding,
-				'padding-right': padding,
-				'padding-top': '20px',
-				'opacity': 1
-			}, 1000);
+
+		Page.renderContentContainer(Grid.CANVAS_WIDTH, Grid.CANVAS_HEIGHT);
 
 		// removes old repo-canvas to prevent multiple 
 		// canvases if buttons clicked in quick succession.
@@ -208,19 +197,6 @@ var Grid = {
 		Page.removePageButtons();
 	},
 
-	// changes the #repo-name tag to the input name
-	displayRepoName: function(name) {
-		$('#repo-name').html(name);
-	},
-
-	addRepoName: function() {
-		var wrapper = $("#repo-name-wrapper")[0]
-		if(!wrapper) {
-			$('#repo-container-back')
-				.append("	<div id='repo-name-wrapper'><p id='repo-name'>Hover A Repo</p></div>");
-		}
-	},
-
 	// adds grid events to d3 square
 	setGridEvents: function(repo) {
 		Grid.setGridMouseEnter(repo);
@@ -241,7 +217,7 @@ var Grid = {
 			.transition()
 			.duration(2000)
 			.attr('rx', 15);
-				Grid.displayRepoName($(repo)[0]['__data__']['name'] + // displays repo name
+				Page.setContentHeader($(repo)[0]['__data__']['name'] + // displays repo name
 					"(" + $(repo)[0]['__data__']['language'] + ')'); // displays repo language (main)
 		})
 	},

@@ -141,6 +141,19 @@ var Page = {
 
 	},
 
+	addContentHeader: function(header) {
+		var wrapper = $("#content-wrapper")[0]
+		if(!wrapper) {
+			$('#repo-container-back')
+				.append("	<div id='content-wrapper'><p id='content-header'>" + header + "</p></div>");
+		}
+	},
+
+	// changes the #repo-name tag to the input name
+	setContentHeader: function(name) {
+		$('#content-header').html(name);
+	},
+
 	resetPageElements: function(header) {
 
 		$('.profile-section-header')
@@ -158,5 +171,23 @@ var Page = {
 			});
 
 	},
+
+	// sets height of container based on num repos and creates svg canvas
+	// on top of back
+	renderContentContainer: function(w, h, callback) {
+		var canvas, padding;
+		// sizes canvas
+		padding = $(window).width()/2 - w/2;
+		$('#repo-container-back')
+			.animate({
+				'height': h + 105,
+				'padding-left':  padding,
+				'padding-right': padding,
+				'padding-top': '20px',
+				'opacity': 1
+			}, 1000, callback);
+
+	},
+
 
 }
