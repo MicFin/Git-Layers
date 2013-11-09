@@ -57,7 +57,7 @@ var Grid = {
 
 	},
 
-		// recalculates the padding on either side of the canvas to center it
+	// recalculates the padding on either side of the canvas to center it
 	horizontalResize: function() {
 
 		$('#repo-container-back')
@@ -136,6 +136,7 @@ var Grid = {
 
 	},
 
+	// generates svg canvas for the grid
 	renderGridCanvas: function() {
 
 		Page.renderContentContainer(Grid.CANVAS_WIDTH, Grid.CANVAS_HEIGHT);

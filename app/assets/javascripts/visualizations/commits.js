@@ -14,14 +14,16 @@ var Commits = {
 			type: 'GET',
 			data: {'commits_url': Repo.currentRepo["commits_url"].split("{")[0]}
 		}).done(function(commits) {
+			console.log(commits);
 			Commits.graphCommits(commits);
 		});
 	},
 
 	// graphs commits based on the time that the repo
-	// has been active (by days or by months)
+	// has been active (days, months, years)
 	graphCommits: function(commits) {
 
+		// initializes namespace variables for generating rest of graph
 		Page.addContentHeader('Hover a Bar')
 		Commits.allCommits = commits;
 		Commits.sortedCommits = Commits.sortCommitsByDate(commits);
@@ -31,27 +33,25 @@ var Commits = {
 		Commits.graphHeight = $('#repo-container-back').height() - 55;
 		Commits.dayDifference = Commits.numberOfDays(Commits.commitDomainDates);
 
-		
-		Commits.graphCanvas = d3.select('#repo-container-back')
-			.append('svg')
-			.attr('id','commits-graph-canvas')
-			.attr('height', Commits.graphHeight)
-			.attr('width', Commits.graphWidth);
+		// creates svg canvas for d3 graph
+		Commits.renderGraphCanvas();
 
-	
+		// graphs by days (by default)
 		Commits.graphByDays()
 	},
 
-	graphByMonths: function() {
-
-	},
-
+	// graphs repos with days being the x-axis and 
 	graphByDays: function()  {
 
+		// creates scale function to determine height of bar
+		// when given number of commits
 		var barHeight = d3.scale.linear()
 			.domain([0, Commits.max])
 			.range([Commits.paddingBottom, Commits.graphHeight - Commits.paddingTop]);
 
+		// creates scale funcion to determine the 'index' of the day
+		// based on the number of days between the first commit and 
+		// the most recent commit
 		var barIndex = d3.time.scale()
 			.domain(Commits.commitDomainDates)
 			.range([0, Commits.dayDifference - 1]);
@@ -162,7 +162,7 @@ var Commits = {
 		var dateArray = dateString.split('T'),
 			date = dateArray[0].split('-');
 
-		return new Date(date[0], date[1], date[2]);
+		return new Date(date[0], date[1] - 1, date[2]);
 	},
 
 	commitMax: function(sortedCommitsArray) {
@@ -198,6 +198,16 @@ var Commits = {
 		}
 		console.log(byDateArray)
 		return byDateArray;
+	},
+
+	renderGraphCanvas: function() {
+
+		Commits.graphCanvas = d3.select('#repo-container-back')
+			.append('svg')
+			.attr('id','commits-graph-canvas')
+			.attr('height', Commits.graphHeight)
+			.attr('width', Commits.graphWidth);
+
 	},
 
 	numberOfDays: function(minMaxArray) {
