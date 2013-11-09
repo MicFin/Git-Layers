@@ -69,11 +69,6 @@ var Commits = {
 			barPadding = 0;
 		}
 
-		
-
-
-		var currentBarHeight = 0;
-
 		Commits.graphCanvas.selectAll('rect')
 			.data(Commits.sortedCommits)
 			.enter()
