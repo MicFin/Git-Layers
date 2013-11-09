@@ -23,7 +23,7 @@ var Commits = {
 	graphCommits: function(commits) {
 
 		Commits.allCommits = commits;
-		Commits.max = Commits.commitMax(commits);
+		Commits.max = Commits.commitMax(Commits.commitsByDate(commits));
 		Commits.commitDomain = Commits.commitDomain(commits);
 		Commits.graphWidth = $(window).width();
 		Commits.graphHeight = $('#repo-container-back').height() * 0.85 + Commits.paddingBottom + Commits.paddingTop;
@@ -39,7 +39,7 @@ var Commits = {
 		if(dayDifference <= 60) {
 			Commits.graphByDays(commits)
 		}
-		console.log(Commits.commitsByDate(commits));
+		console.log(Commits.max);
 
 	},
 
@@ -80,7 +80,6 @@ var Commits = {
 			max = 0, commitsForDate = 0;
 		for(;i < length;) {
 			for(key in sortedCommitsArray[i]) {
-				console.log(key);
 				commitsForDate = sortedCommitsArray[i][key].length;
 				if(commitsForDate > max) {
 					max = commitsForDate
@@ -92,20 +91,22 @@ var Commits = {
 	},
 
 	commitsByDate: function(commits) {
-		var byDate = {}, i = 0, length = commits.length,
+		var byDateObj = {}, i = 0, length = commits.length,
 			max = 0, date, byDateArray = [];
 
 		for(;i<length;) {
 			date = Commits.formatDate(commits[i].commit.committer.date);
-			byDate[date] = byDate[date] || [];
-			byDate[date].push(commits[i]);
+			byDateObj[date] = byDateObj[date] || [];
+			byDateObj[date].push(commits[i]);
 			i += 1;
 		}
 
-		
-
-		return byDate;
-
+		for(var key in byDateObj) {
+			dateObject = {}
+			dateObject[key] = byDateObj[key];
+			byDateArray.push(dateObject);
+		}
+		return byDateArray;
 	},
 
 	numberOfDays: function(minMaxArray) {
