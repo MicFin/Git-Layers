@@ -28,7 +28,7 @@ var Commits = {
 		Commits.max = Commits.commitMax(Commits.sortedCommits);
 		Commits.commitDomainDates = Commits.commitDomain(commits);
 		Commits.graphWidth = $(window).width();
-		Commits.graphHeight = $('#repo-container-back').height() - 105/2;
+		Commits.graphHeight = $('#repo-container-back').height() - 55;
 		Commits.dayDifference = Commits.numberOfDays(Commits.commitDomainDates);
 
 		
