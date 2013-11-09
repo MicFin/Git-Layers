@@ -1,7 +1,7 @@
 var Commits = {
 
-	paddingLeft: 20,
-	paddingRight: 20,
+	paddingLeft: 60,
+	paddingRight: 60,
 	paddingTop: 20,
 	paddingBottom: 20,
 
@@ -23,10 +23,12 @@ var Commits = {
 	graphCommits: function(commits) {
 
 		Commits.allCommits = commits;
-		Commits.max = Commits.commitMax(Commits.commitsByDate(commits));
+		Commits.sortedCommits = Commits.sortCommitsByDate(commits);
+		Commits.max = Commits.commitMax(Commits.sortedCommits);
 		Commits.commitDomain = Commits.commitDomain(commits);
 		Commits.graphWidth = $(window).width();
-		Commits.graphHeight = $('#repo-container-back').height() * 0.85 + Commits.paddingBottom + Commits.paddingTop;
+		Commits.graphHeight = $('#repo-container-back').height();
+		Commits.dayDifference = Commits.numberOfDays(Commits.commitDomain);
 		
 		Commits.graphCanvas = d3.select('#repo-container-back')
 			.append('svg')
@@ -34,20 +36,72 @@ var Commits = {
 			.attr('height', Commits.graphHeight)
 			.attr('width', Commits.graphWidth);
 
-		dayDifference = Commits.numberOfDays(Commits.commitDomain);
-
-		if(dayDifference <= 60) {
-			Commits.graphByDays(commits)
+	
+		if(Commits.dayDifference <= 60) {
+			Commits.graphByDays()
 		}
-		console.log(Commits.max);
 
 	},
 
-	graphByMonths: function(commits) {
-		height = d3.scale.linear().domain()
+	graphByMonths: function() {
+
 	},
 
-	graphByDays: function(commits)  {
+	graphByDays: function()  {
+
+		var barHeight = d3.scale.linear()
+			.domain([0, Commits.max])
+			.range([Commits.paddingBottom, Commits.graphHeight - Commits.paddingTop]);
+
+		var barIndex = d3.time.scale()
+			.domain(Commits.commitDomain)
+			.range([0, Commits.dayDifference - 1]);
+
+		var barPosition = d3.scale.linear()
+			.domain([0, Commits.dayDifference -1])
+			.range([Commits.paddingLeft, Commits.graphWidth - Commits.paddingRight]);
+
+		barWidth = Commits.graphWidth/Commits.dayDifference;
+
+		var currentBarHeight = 0;
+
+		Commits.graphCanvas.selectAll('rect')
+			.data(Commits.sortedCommits)
+			.enter()
+			.append('rect')
+			.attr('x', function(d,i){
+				var index;
+				for(key in d) {
+					index = barIndex(Commits.formatDate(d[key][0].commit.committer.date));
+				}
+				return barPosition(index);
+			})
+			.attr('height',0)
+			.attr('y', Commits.graphHeight)
+			.attr('fill', function() {
+				return Color.stringColor(Repo.currentRepo['language']);
+			})
+			.attr('rx', 2)
+			.transition()
+			.delay(function(d,i) {
+				return (Math.random() * (Math.random() + 2)) * 100;
+			})
+			.duration(1000)
+			.attr('height', function(d,i) {
+				var length;
+				for(key in d){
+					length = d[key].length;
+				}
+				return barHeight(length);
+			})
+			.attr('y', function(d,i) {
+				var length;
+					for(key in d){
+						length = d[key].length;
+					}
+					return Commits.graphHeight - barHeight(length) + 2;
+				})
+			.attr('width', barWidth - 5);
 
 	},
 
@@ -90,7 +144,7 @@ var Commits = {
 		return max;
 	},
 
-	commitsByDate: function(commits) {
+	sortCommitsByDate: function(commits) {
 		var byDateObj = {}, i = 0, length = commits.length,
 			max = 0, date, byDateArray = [];
 
