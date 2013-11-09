@@ -64,6 +64,14 @@ var Commits = {
 		barPadding = (0.1) * barWidth;
 		barWidth = (0.9) * barWidth;
 
+		if(Commits.sortedCommits.length === 1) {
+			barWidth = Commits.graphWidth - Commits.paddingRight - Commits.paddingLeft;
+			barPadding = 0;
+		}
+
+		
+
+
 		var currentBarHeight = 0;
 
 		Commits.graphCanvas.selectAll('rect')
