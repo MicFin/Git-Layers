@@ -145,16 +145,18 @@ var Page = {
 
 		$('.profile-section-header')
 			.html("<h2>" + header + " </h2>");
-			
-		Page.resetBackContainer();
-	},
 
-	resetBackContainer: function() {
+		if('#commits-graph-canvas') {
+			Commits.unGraphCommits
+		}
 		$("#repo-container-back")
-		.animate({
-			'height': 0,
-			'opacity': 0
-		}, 1000);
-	}
+			.animate({
+				'height': 0,
+				'opacity': 0
+			}, 1000, function() {
+				$('#repo-container-back #commits-graph-canvas').remove();
+			});
+
+	},
 
 }
