@@ -33,7 +33,7 @@ class UsersController < ApplicationController
 	def repos
 
 		sort_type = params[:sort_type] || 'created'
-		
+		 
 		user_repos = Repo.generate_response(sort_type, params[:split_type], session[:access_token], session[:logged_in_user])
 
 		respond_to do |format|
