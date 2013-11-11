@@ -15,6 +15,7 @@ class CreateUsersTable < ActiveRecord::Migration
     	t.string :created_at
     	t.string :updated_at
     	t.string :email
+        t.string :login
 
     	t.timestamps
 
