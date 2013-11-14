@@ -162,7 +162,7 @@ var Commits = {
 		var dateArray = dateString.split('T'),
 			date = dateArray[0].split('-');
 
-		return new Date(date[0], date[1], date[2]);
+		return new Date(date[0], date[1] - 1, date[2]);
 	},
 
 	commitMax: function(sortedCommitsArray) {
