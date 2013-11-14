@@ -10,7 +10,7 @@ var Commits = {
 	fetchCommits: function() {
 		var i = 0, max;
 		$.ajax({
-			url: '/users/repos/commits',
+			url: '/repos/commits',
 			type: 'GET',
 			data: {'commits_url': Repo.currentRepo["commits_url"].split("{")[0]}
 		}).done(function(commits) {
