@@ -58,4 +58,13 @@ class Repo
 
 	end
 
+	def self.fetch_repo_commits(commits_url, access_token)
+		commits = Rails.cache.fetch("#{commits_url}", expires_in: 9000.seconds) do
+			JSON.parse(RestClient.get(commits_url, {params:
+				{ access_token: access_token,
+					per_page: 100}}))
+		end
+		return commits
+	end
+
 end

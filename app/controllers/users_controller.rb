@@ -44,11 +44,7 @@ class UsersController < ApplicationController
 	end
 
 	def repo_commits 
-		commits = Rails.cache.fetch("#{params['commits_url']}", expires_in: 9000.seconds) do
-			JSON.parse(RestClient.get(params['commits_url'], {params:
-				{ access_token: session[:access_token],
-					per_page: 100}}))
-		end
+		commits = Repo.fetch_repo_commits(params["commits_url"], session[:access_token])
 
 		respond_to do |format|
 			format.json { render json: commits }
