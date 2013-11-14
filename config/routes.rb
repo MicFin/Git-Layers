@@ -14,7 +14,9 @@ GitLayers::Application.routes.draw do
   get 'profile', to: 'users#profile', as: 'user_profile'
 
   # repos controller routes
-  get 'repos/commits', to: 'repos#repo_commits', as: 'repo_commits'
   get 'repos/user_repos', to: 'repos#user_repos', as: 'current_user_repos'
+  get 'repos/repos', to: 'repos#repos', as: 'repos'
+  get 'repos/commits', to: 'repos#repo_commits', as: 'repo_commits'
+  
 
 end
