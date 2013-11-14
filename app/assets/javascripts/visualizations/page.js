@@ -42,10 +42,11 @@ var Page = {
 			Page.removePageButtons();
 			Page.resetPageElements('Repositories');
 			$.ajax({
-				url: '/users/repos',
+				url: '/repos/user_repos',
 				type: 'GET',
 				data: {'sort_type': 'none', 'split_type': 'none'}
 			}).done(function(data) {
+				Page.setContentHeader("Hover a Repo")
 				Grid.initGridLayout(data);
 			});
 		})
@@ -149,7 +150,7 @@ var Page = {
 		}
 	},
 
-	// changes the #repo-name tag to the input name
+	// changes the #content-header to the input name
 	setContentHeader: function(name) {
 		$('#content-header').html(name);
 	},

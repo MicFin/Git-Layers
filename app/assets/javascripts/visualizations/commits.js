@@ -196,7 +196,6 @@ var Commits = {
 			dateObject[key] = byDateObj[key];
 			byDateArray.push(dateObject);
 		}
-		console.log(byDateArray)
 		return byDateArray;
 	},
 

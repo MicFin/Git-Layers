@@ -18,6 +18,4 @@ class ReposController < ApplicationController
 
   end
 
-
-
 end

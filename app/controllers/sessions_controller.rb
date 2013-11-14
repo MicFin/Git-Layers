@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  # defines the session id by the user currently on the site
+  # defines the session by the user currently logged in
   # redirects to index page
 	def create
 		session[:access_token] = params[:access_token]
@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
 		redirect_to root_url, notice: 'Logged In'
 	end
 
-  # logs out a user, removing the user id from session
+  # logs out a user, removing the user from session
   # redirects to index page
 	def destroy
 		session[:subject_user] = nil
