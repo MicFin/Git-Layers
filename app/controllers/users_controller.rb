@@ -9,7 +9,6 @@ class UsersController < ApplicationController
 	    },{
 	     :accept => :json
 	    })
-		puts JSON.parse(result)['access_token']
 		redirect_to login_user_path(access_token: JSON.parse(result)['access_token'])
 	end
 	
@@ -20,13 +19,16 @@ class UsersController < ApplicationController
 	end
 
 	# uses logged in user's information to render user profile
-	def profile
+	def user
 		if !user_logged_in
 			redirect_to '/'
 		else
-			username = session[:logged_in_user]['login']
-			@user_repos = Repo.fetch_repos(username, 'created', session[:access_token]).to_json.html_safe
-			@username = session[:logged_in_user]['login'].to_json.html_safe
+			user = User.load_api_data(session[:access_token], {username: params[:username]})
+			@username_string = user['login']
+			@user_repos = Repo.fetch_repos(@username_string, 'created', session[:access_token]).to_json.html_safe
+			@username = @username_string.to_json.html_safe
+			@name_string = user['name']
+			@name = @name_string.to_json.html_safe
 		end
 	end
 end

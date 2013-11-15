@@ -11,10 +11,17 @@ var Grid = {
 
 	// checks for no-repos, otherwise calls display functions 
 	// to put grid on page
-	initializeGrid: function(repos, username) {
+	initializeGrid: function(repos, username, name) {
 
 		Grid.repos = repos;
-		Grid.current_username = username;
+		
+		if(username){
+			Grid.current_username = username;
+		}
+
+		if(name) {
+			Grid.current_name = name;
+		}
 
 		$(function() {
 			if(Grid.checkRepos(repos.length)) {
@@ -159,6 +166,7 @@ var Grid = {
 
 	// calls controller to get repos sorted in specified way and renders them
 	renderGrid: function(sortType, splitType) {
+			console.log(Grid.current_username);
 			$.ajax({
 				url: '/repos/user_repos',
 				type: 'GET',

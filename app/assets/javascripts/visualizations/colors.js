@@ -5,6 +5,7 @@ var Color = {
 		if(string === "Ruby") {return '#992124';}
 		if(string === 'JavaScript') {return '#d2ba44';}
 		if(string === 'C++') {return '#e961e4';}
+		if(string === 'Python') {return '#4879b5';}
 
 		if (string.length < 6) {
 			while(string.length < 6) {
@@ -31,6 +32,8 @@ var Color = {
 		if(string === "Ruby") {return '#ca2830';}
 		if(string === 'JavaScript') {return '#ebcf4b';}
 		if(string === 'C++') {return '#ff6af9';}
+		if(string === 'Python') {return '#5a98e3';}
+		
 		if (string.length < 6) {
 			while(string.length < 6) {
 				string += 'ax';

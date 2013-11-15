@@ -29,7 +29,7 @@ var Page = {
 			.attr('id','back-button-wrapper')
 			.css('opacity', '0'),
 		button = $( document.createElement('div')).addClass('medium info btn rounded')
-			.html('<a href="/profile" class="back-button">Back to the Grid</a>')
+			.html('<a href="/user" class="back-button">Back to the Grid</a>')
 		return wrapper.append(button);
 
 	},
@@ -40,11 +40,15 @@ var Page = {
 		$('.back-button').click(function(e) {
 			e.preventDefault();
 			Page.removePageButtons();
-			Page.resetPageElements('Repositories');
+			Page.resetPageElements();
+			Page.setPageHeader(Grid.current_name + "'s Repositories")
 			$.ajax({
 				url: '/repos/user_repos',
 				type: 'GET',
-				data: {'sort_type': 'none', 'split_type': 'none'}
+				data: {'sort_type'  : 'none',
+				 			 'split_type' : 'none',
+				 			 'username'   : Grid.current_username
+				 			}
 			}).done(function(data) {
 				Page.setContentHeader("Hover a Repo")
 				Grid.initializeGrid(data);
@@ -155,10 +159,9 @@ var Page = {
 		$('#content-header').html(name);
 	},
 
-	resetPageElements: function(header) {
+	resetPageElements: function() {
 
-		$('.profile-section-header')
-			.html("<h2>" + header + " </h2>");
+
 
 		if('#commits-graph-canvas') {
 			Commits.unGraphCommits
@@ -171,6 +174,11 @@ var Page = {
 				$('#repo-container-back #commits-graph-canvas').remove();
 			});
 
+	},
+
+	setPageHeader: function(header) {
+		$('.profile-section-header')
+			.html("<h2>" + header + " </h2>");
 	},
 
 	// sets height of container based on num repos and creates svg canvas

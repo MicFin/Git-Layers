@@ -12,6 +12,8 @@ class ReposController < ApplicationController
     sort_type = params[:sort_type] || 'created'
     username = params['username']
 
+    puts username
+
     user_repos = Repo.generate_response(sort_type, params[:split_type], session[:access_token], username)
 
     respond_to do |format|
