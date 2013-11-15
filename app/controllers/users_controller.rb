@@ -19,7 +19,7 @@ class UsersController < ApplicationController
 	end
 
 	# uses logged in user's information to render user profile
-	def user
+	def user_profile
 		if !user_logged_in
 			redirect_to '/'
 		else

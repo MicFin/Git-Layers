@@ -11,7 +11,7 @@ GitLayers::Application.routes.draw do
   # users controller routes
   get 'users/login', to: 'users#login', as: 'login_user'
   get 'users/callback', to: 'users#callback'
-  get 'profile', to: 'users#user', as: 'user_profile'
+  get 'user_profile', to: 'users#user_profile', as: 'user_profile'
 
   # repos controller routes
   get 'repos/user_repos', to: 'repos#user_repos', as: 'current_user_repos'
