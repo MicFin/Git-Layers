@@ -11,7 +11,10 @@ var Grid = {
 
 	// checks for no-repos, otherwise calls display functions 
 	// to put grid on page
-	initGridLayout: function(repos) {
+	initializeGrid: function(repos, username) {
+
+		Grid.repos = repos;
+		Grid.current_username = username;
 
 		$(function() {
 			if(Grid.checkRepos(repos.length)) {
@@ -94,13 +97,13 @@ var Grid = {
 
 	// displays the repo grid on the page and sets event listeners for
 	// individual squares
-	writeRepoGrid: function(repos) {
+	writeRepoGrid: function() {
 
 		// creates svg canvas
 		svg = Grid.renderGridCanvas();
 		// uses repos as data to create grid rectangles
 		rects = svg.selectAll('rect')
-		.data(repos)
+		.data(Grid.repos)
 		.enter()
 		.append('rect')
 		.attr('rx', 5)
@@ -159,7 +162,11 @@ var Grid = {
 			$.ajax({
 				url: '/repos/user_repos',
 				type: 'GET',
-				data: {'sort_type': sortType, 'split_type': splitType}
+				data: {
+							 'sort_type' : sortType, 
+							 'split_type': splitType,
+							 'username'  : Grid.current_username
+							}
 			}).done(function(data) {
 				Grid.clearCanvas();
 				d3.select('#repo-container-canvas')
@@ -167,7 +174,7 @@ var Grid = {
 					.delay(500)
 					.duration(10)
 					.each('end', function() {	
-						Grid.initGridLayout(data);
+						Grid.initializeGrid(data);
 					})
 					.remove();
 			});

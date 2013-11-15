@@ -1,8 +1,8 @@
 class Repo
 
-	def self.fetch_repos(user, sort_type, access_token)
-		user_repos = Rails.cache.fetch("user-repos-#{user['github_id']}-created", expires_in: 9000.seconds) do 
-				JSON.parse(RestClient.get(user['repos_url'], {params: 
+	def self.fetch_repos(username, sort_type, access_token)
+		user_repos = Rails.cache.fetch("user-name-#{username}", expires_in: 9000.seconds) do 
+				JSON.parse(RestClient.get("https://api.github.com/users/#{username}/repos", {params: 
 					{ access_token: access_token, 
 						page: 1, 
 						per_page: 100, 
@@ -36,9 +36,11 @@ class Repo
 	
 	end
 
-	def self.generate_response(sort_type, split_type, token, user)
+	def self.generate_response(sort_type, split_type, token, username)
 		
-		user_repos = Repo.fetch_repos(user, sort_type, token)
+		puts username
+		
+		user_repos = Repo.fetch_repos(username, sort_type, token)
 
 		user_repos.reject! do |repo|
 			!repo['language']
@@ -49,9 +51,9 @@ class Repo
 		end
 
 		if split_type == 'forked'
-			user_repos = Repo.split_by_forked(user_repos, user['login'])
+			user_repos = Repo.split_by_forked(user_repos, username)
 		elsif split_type == 'created'
-			user_repos = Repo.split_by_created(user_repos, user['login'])
+			user_repos = Repo.split_by_created(user_repos, username)
 		end
 
 		return user_repos 

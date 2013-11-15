@@ -47,7 +47,7 @@ var Page = {
 				data: {'sort_type': 'none', 'split_type': 'none'}
 			}).done(function(data) {
 				Page.setContentHeader("Hover a Repo")
-				Grid.initGridLayout(data);
+				Grid.initializeGrid(data);
 			});
 		})
 

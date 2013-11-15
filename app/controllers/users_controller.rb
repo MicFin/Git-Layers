@@ -24,8 +24,9 @@ class UsersController < ApplicationController
 		if !user_logged_in
 			redirect_to '/'
 		else
-			user = session[:logged_in_user]
-			@user_repos = Repo.fetch_repos(user, 'created', session[:access_token]).to_json.html_safe
+			username = session[:logged_in_user]['login']
+			@user_repos = Repo.fetch_repos(username, 'created', session[:access_token]).to_json.html_safe
+			@username = session[:logged_in_user]['login'].to_json.html_safe
 		end
 	end
 end
