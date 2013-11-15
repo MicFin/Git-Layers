@@ -1,5 +1,37 @@
 var Page = {
 
+	// fades in the homepage
+	animateHomePage: function() {
+		var height = $(window).height()  - 180, titleMargin;
+		if(height > 600) {
+			titleMargin = height/5;
+		}
+		else if(height > 200) {
+			titleMargin = 40;
+		}
+		else {
+			height = 500;
+			titleMargin = 40;
+		}
+
+
+
+		$('#page-title').css('margin-top', titleMargin);
+
+		$('#home-page-content-container')
+		.css('opacity', 0)
+		.css('height', height)
+		.animate({
+			'opacity':1
+		}, 2000);
+
+		$('#navbar-main-nav')
+		.css('opacity', 0)
+		.animate({
+			'opacity':1
+		}, 1500);
+	},
+
 	// removes all buttons from page
 	removePageButtons: function() {
 
@@ -197,6 +229,4 @@ var Page = {
 			}, 1000, callback);
 
 	},
-
-
 }

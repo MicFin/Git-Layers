@@ -1,3 +1,4 @@
+
 <nav class='navbar' id='navbar-main-nav'>
   <a class='toggle' gumby-trigger='#navbar-main-nav #main-nav' href='#'>
     <i class='icon-menu'></i></a>
@@ -5,9 +6,7 @@
     <ul id='main-nav'>
       <li><a href='/'>Layers</a></li>
       <li><a href='/welcome/about'>About</a></li>
-      <% if !user_logged_in %>
-        <li><a href='https://github.com/login/oauth/authorize?client_id=<%=ENV["CLIENT_ID"]%>'><span>Login</span></a></li>
-      <% else %>
+      <% if user_logged_in %>
         <li><%=link_to 'Logout', sessions_destroy_path %></li>
       <% end %>
     </ul>
